@@ -17,7 +17,7 @@ Output language is configurable: 简体中文 (default), 繁體中文（港式�
 Clone this repository into your WorkBuddy skills directory:
 
 ```bash
-git clone https://github.com/<your-user>/eagle-untagged-organizer.git \
+git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
   ~/.workbuddy/skills/eagle-untagged-organizer
 ```
 
