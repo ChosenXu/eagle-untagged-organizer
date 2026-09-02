@@ -12,6 +12,14 @@ For every selected untagged asset it produces three outputs, written back to Eag
 
 Output language is configurable: 简体中文 (default), 繁體中文（港式）, or English.
 
+## Highlights
+
+1. **Truly "reads" each asset before acting** — it never guesses from filenames. It first runs a multimodal pre-flight check, reading each image to understand its subjects, colors, and layout, and only then produces names and annotations — quality is guaranteed.
+2. **Structured, reusable, and on-track** — names are short titles, not analytical sentences; annotations follow a fixed five-field template; tags come from a controlled three-dimension vocabulary and are selected verbatim (no invented terms). The result is a consistent library whose tag taxonomy never drifts out of control.
+3. **Safety first: preview before writing** — every change is surfaced as a dry-run manifest for your review, and it batch-writes to Eagle only after you approve. After writing, it re-reads each item to verify — it never silently mutates your library.
+4. **Tag governance included** — beyond organizing untagged assets, it can merge, normalize, and rename an overgrown tag vocabulary — through the same preview + authorization flow.
+5. **Scales to large batches** — for 100+ asset runs, a built-in Python script performs batch writes over stdio, so you don't cram huge payloads into the conversation.
+
 ## Install
 
 Clone this repository into your WorkBuddy skills directory:
