@@ -1,5 +1,7 @@
 # Eagle Untagged Organizer
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 A [WorkBuddy](https://www.workbuddy.cn/) skill that batch-organizes **untagged** design assets in [Eagle](https://eagle.cool/) via the `eagle-mcp` connector — renaming, annotating, and tagging UI/UX references and graphic-design works in one pass. It also provides a **tag-governance** workflow to merge/normalize an overgrown tag vocabulary.
 
 ## What it does
