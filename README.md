@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README.zh-CN.md)
 
-A [WorkBuddy](https://www.workbuddy.cn/) skill that batch-organizes **untagged** design assets in [Eagle](https://eagle.cool/) via the `eagle-mcp` connector — renaming, annotating, and tagging UI/UX references and graphic-design works in one pass. It also provides a **tag-governance** workflow to merge/normalize an overgrown tag vocabulary.
+A [WorkBuddy](https://www.workbuddy.cn/) skill that batch-organizes **untagged** design assets in [Eagle](https://eagle.cool/) via the `eagle-mcp` connector — renaming, annotating, and tagging UI/UX references and graphic-design works in one pass.
 
 ## What it does
 
@@ -19,8 +19,7 @@ Output language is configurable: 简体中文 (default), 繁體中文（港式�
 1. **Truly "reads" each asset before acting** — it never guesses from filenames. It first runs a multimodal pre-flight check, reading each image to understand its subjects, colors, and layout, and only then produces names and annotations — quality is guaranteed.
 2. **Structured, reusable, and on-track** — names are short titles, not analytical sentences; annotations follow a fixed five-field template; tags come from a controlled three-dimension vocabulary and are selected verbatim (no invented terms). The result is a consistent library whose tag taxonomy never drifts out of control.
 3. **Safety first: preview before writing** — every change is surfaced as a dry-run manifest for your review, and it batch-writes to Eagle only after you approve. After writing, it re-reads each item to verify — it never silently mutates your library.
-4. **Tag governance included** — beyond organizing untagged assets, it can merge, normalize, and rename an overgrown tag vocabulary — through the same preview + authorization flow.
-5. **Scales to large batches** — for 100+ asset runs, a built-in Python script performs batch writes over stdio, so you don't cram huge payloads into the conversation.
+4. **Scales to large batches** — for 100+ asset runs, a built-in Python script performs batch writes over stdio, so you don't cram huge payloads into the conversation.
 
 ## Install
 
@@ -40,7 +39,7 @@ Or copy the folder manually into `~/.workbuddy/skills/`.
 
 ## Usage
 
-Mention Eagle / `eagle-mcp` / untagged assets with a batch-organize intent (or a tag-cleanup intent such as "合并标签" / "整理标签"), and the skill drives the workflow. See [`SKILL.md`](SKILL.md) for the full workflow (pre-flight checks → analyze → dry-run preview → authorization gate → batch update → verify).
+Mention Eagle / `eagle-mcp` / untagged assets with a batch-organize intent, and the skill drives the workflow. See [`SKILL.md`](SKILL.md) for the full workflow (pre-flight checks → analyze → dry-run preview → authorization gate → batch update → verify).
 
 ## Structure
 
@@ -52,7 +51,6 @@ references/
   vocabulary-en.md           # English tag taxonomy
   templates.md               # naming formula & five-field annotation template
   gotchas.md                 # pitfalls & call-shape gotchas
-  tag-governance.md          # merge/normalize tags workflow
 scripts/
   apply_eagle_batch.py       # bulk-apply item updates via MCP stdio proxy
   build_dryrun.py            # build a reviewable dry-run manifest

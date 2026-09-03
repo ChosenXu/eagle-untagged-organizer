@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-一个 [WorkBuddy](https://www.workbuddy.cn/) skill，通过 `eagle-mcp` 连接器批量整理 [Eagle](https://eagle.cool/) 中**未打标签**的设计素材——一次性完成 UI/UX 参考与平面设计作品的命名、标注和打标签。同时提供一套**标签治理**工作流，用于合并 / 规范化已经膨胀失控的标签词表。
+一个 [WorkBuddy](https://www.workbuddy.cn/) skill，通过 `eagle-mcp` 连接器批量整理 [Eagle](https://eagle.cool/) 中**未打标签**的设计素材——一次性完成 UI/UX 参考与平面设计作品的命名、标注和打标签。
 
 ## 它能做什么
 
@@ -19,8 +19,7 @@
 1. **真正"看懂"素材再动手** —— 不是靠文件名瞎猜，而是先做多模态能力预检，逐张读图理解画面里的对象、配色、版式，再产出命名和标注——质量有保证。
 2. **结构化、可复用、不跑偏** —— 命名是短标题而非分析长句；标注是固定五段式；标签是三维受控词表、逐字原样选取、禁止自造词。整理出来的库风格统一，标签体系不会越滚越乱。
 3. **安全第一，先预览后写入** —— 所有修改都先出 dry-run 变更清单给你审阅，确认无误才批量落库；改完还会逐条回读校验，不会悄无声息地乱改你的库。
-4. **顺带治理标签乱象** —— 除了整理未打标签的素材，还能合并、规范化、重命名已经膨胀失控的标签词表——同样走"预览 + 授权"的谨慎流程。
-5. **大量素材也能扛** —— 100+ 的大批量场景有内置 Python 脚本走 stdio 批量写入，不用把巨量 payload 糊进对话里。
+4. **大量素材也能扛** —— 100+ 的大批量场景有内置 Python 脚本走 stdio 批量写入，不用把巨量 payload 糊进对话里。
 
 ## 安装
 
@@ -40,7 +39,7 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 
 ## 使用方法
 
-当提到 Eagle / `eagle-mcp` / 未打标签素材并带有批量整理意图（或"合并标签" / "整理标签"这类标签清理意图）时，本 skill 会自动驱动工作流。完整工作流（预检 → 分析 → dry-run 预览 → 授权门槛 → 批量更新 → 校验）见 [`SKILL.md`](SKILL.md)。
+当提到 Eagle / `eagle-mcp` / 未打标签素材并带有批量整理意图时，本 skill 会自动驱动工作流。完整工作流（预检 → 分析 → dry-run 预览 → 授权门槛 → 批量更新 → 校验）见 [`SKILL.md`](SKILL.md)。
 
 ## 目录结构
 
@@ -52,7 +51,6 @@ references/
   vocabulary-en.md           # 英文标签词表
   templates.md               # 命名公式与五段式标注模板
   gotchas.md                 # 常见坑与调用形态注意事项
-  tag-governance.md          # 合并 / 规范化标签工作流
 scripts/
   apply_eagle_batch.py       # 通过 MCP stdio 代理批量应用更新
   build_dryrun.py            # 生成可审阅的 dry-run 变更清单

@@ -1,8 +1,8 @@
 ---
 name: eagle-untagged-organizer
-description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp connector), or to merge/normalize an overgrown Eagle tag vocabulary. Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items combined with a batch-organize intent, or on tag-cleanup intent (合并标签/整理标签/重命名标签). Produces a name, a structured annotation, and tags for each asset based on visual analysis, covering both UI/UX references and graphic design works.
+description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp connector). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items combined with a batch-organize intent. Produces a name, a structured annotation, and tags for each asset based on visual analysis, covering both UI/UX references and graphic design works.
 agent_created: true
-version: 2.1.0
+version: 2.2.0
 ---
 
 # Eagle Untagged Organizer
@@ -11,9 +11,7 @@ version: 2.1.0
 
 Batch-organize untagged Eagle library assets via the `eagle-mcp` connector. This skill handles **UI/UX references** (web pages, mobile apps, dashboards, settings) and **graphic design works** (brand guidelines, posters, packaging, editorial spreads, icon sets, infographics, typography specimens).
 
-It has two workflows:
-1. **Untagged organizer** (default) — for every selected asset, produce a name, annotation, and tags, written in one `item_update` call.
-2. **Tag governance** — merge/normalize an overgrown tag vocabulary (`tag_merge`, `tag_update`). See `references/tag-governance.md`.
+It has a single workflow — the **Untagged organizer**: for every selected asset, produce a name, annotation, and tags, written in one `item_update` call.
 
 For the organizer workflow, every selected asset produces three outputs:
 1. A concise **name** (title-style, for quick identification & search)
@@ -41,13 +39,12 @@ The five annotation fields stay in the same logical order and meaning across all
 - The user mentions Eagle, eagle-mcp, or untagged items.
 - The user wants to rename, tag, or annotate multiple Eagle assets automatically.
 - The user asks for a richer, more consistent metadata pass on design references (UI screenshots or graphic design works).
-- **Tag governance** triggers: the user wants to merge/consolidate/normalize existing tags (e.g. "合并标签", "整理标签", "标签太乱", "重命名标签") — route to `references/tag-governance.md`.
 
 ## Prerequisites
 
 - Eagle desktop app must be running, because `eagle-mcp` is an SSE proxy that connects to Eagle itself.
 - `eagle-mcp` must be configured in `~/.workbuddy/mcp.json` under `mcpServers` and trusted in the connector panel.
-- The connector exposes a set of tools; the key ones used by this skill are `item_get`, `item_count`, `item_update` (organizer), and `tag_get`, `tag_merge`, `tag_update` (governance).
+- The connector exposes a set of tools; the key ones used by this skill are `item_get`, `item_count`, and `item_update`.
 
 ## Supporting Files
 
@@ -60,7 +57,6 @@ Load these `references/` files only when needed, not all at once:
 | `references/vocabulary-en.md` | Before producing tags in English — industry-standard English tag list |
 | `references/templates.md` | Before producing names/annotations — the naming formula and the five-field annotation template (also inlined in Phase 2) |
 | `references/gotchas.md` | Before the first `item_update` of a session, and whenever a call behaves unexpectedly |
-| `references/tag-governance.md` | When the user wants to merge/consolidate/normalize existing tags (tag governance workflow) |
 
 `scripts/apply_eagle_batch.py` is a bundled Python MCP-stdio client for bulk (100+) writes; use it instead of pasting large payloads into the chat. `scripts/build_dryrun.py` turns the analysis output into a reviewable manifest (Phase 3a). See `references/gotchas.md` for usage.
 
@@ -173,10 +169,10 @@ Do not proceed to Phase 4 until the user confirms the final manifest.
 
 **In scope**:
 - The untagged organizer: rename, tag, and annotate untagged Eagle assets (UI/UX references and graphic design works) based on visual analysis.
-- Tag governance: merge/normalize/rename existing tags — **only** via `references/tag-governance.md`, with dry-run preview and explicit authorization (these writes are global and irreversible).
 
 **Out of scope** (do not perform these unless the user separately asks and confirms):
 - Folder reorganization or moving items into/out of folders.
 - Deleting assets or moving them to trash.
 - Deduplicating or detecting near-duplicate assets.
-- Any write to Eagle without passing the Phase 3a dry-run preview and the Phase 3b authorization gate (or the equivalent gates in `references/tag-governance.md`).
+- Merging, renaming, normalizing, or retiring existing library tags — these are tag-governance operations handled by a separate skill, not this one.
+- Any write to Eagle without passing the Phase 3a dry-run preview and the Phase 3b authorization gate.
