@@ -7,16 +7,27 @@ fed to `apply_eagle_batch.py --payload <manifest>` to apply exactly the
 entries that remain — so "review → prune → apply" is one clean, auditable
 loop and nothing is written that was not explicitly left in the manifest.
 
-Manifest format (identical to apply_eagle_batch.py's payload):
+Manifest format (matches apply_eagle_batch.py's payload; review-only fields are
+stripped before send):
     {
       "items": [
-        { "id": "...", "oldName": "...", "name": "...", "tags": [...], "annotation": "..." }
+        {
+          "id": "...",
+          "oldName": "...",        # review-only (ignored by apply script)
+          "nameAction": "keep",    # "keep" preserves the existing name; "rename" sends proposedName
+          "proposedName": "...",   # set only when nameAction is rename/propose
+          "name": "...",           # carried for propose/rename entries; the script sends it only when nameAction=="rename"
+          "tags": [...],
+          "annotation": "..."
+        }
       ]
     }
 
 Notes:
-    - `oldName` is review-only metadata; `apply_eagle_batch.py` ignores it
-      (Eagle derives it from the item id).
+    - `oldName` / `nameAction` / `proposedName` are review-only metadata;
+      `apply_eagle_batch.py` strips them before sending and honors `nameAction`
+      (sends `name` only when `nameAction == "rename"`, else omits it so Eagle
+      keeps the existing name).
     - This script does NOT write to Eagle. It only writes the local manifest.
 """
 
@@ -50,10 +61,16 @@ def main():
         if not isinstance(it, dict) or "id" not in it:
             print(f"warning: skipping malformed entry (no id): {it!r}")
             continue
-        # Carry review-only oldName through so the user sees what changes.
+        # Carry review-only fields through so the user sees what changes and
+        # can choose per-asset whether to keep or overwrite the existing name.
+        # `nameAction` defaults to "rename" for backward compatibility with
+        # plain manifests that have no nameAction; the analysis step should set
+        # it explicitly ("keep" | "rename").
         entry = {
             "id": it["id"],
             "oldName": it.get("oldName", it.get("name", "")),
+            "nameAction": it.get("nameAction", "rename"),
+            "proposedName": it.get("proposedName", it.get("name", "")),
             "name": it.get("name", ""),
             "tags": it.get("tags", []),
             "annotation": it.get("annotation", ""),

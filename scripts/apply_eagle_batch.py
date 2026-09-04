@@ -12,6 +12,12 @@ Usage:
 payload.json format:
     { "items": [ { "id": "...", "name": "...", "tags": [...], "annotation": "..." }, ... ] }
 
+Per-item `nameAction` (`keep` | `rename`, default `rename`) and `proposedName`
+are accepted for dry-run manifests: the script sends `name` only when
+`nameAction == "rename"`, otherwise it omits `name` so Eagle preserves the
+existing name (verified empirically). `oldName` / `nameAction` / `proposedName`
+are stripped before the payload is sent.
+
 For other tools (e.g. item_get by ids), pass `--tool item_get` and a payload
 shaped as that tool's arguments, e.g. { "ids": ["...", ...] }.
 
@@ -130,6 +136,35 @@ def resolve_proxy(explicit=None):
     )
 
 
+def clean_items(items):
+    """Strip review-only fields and apply the name-disposition decision.
+
+    Returns a new list where each item is payload-ready for `item_update`:
+    - `oldName` / `nameAction` / `proposedName` are removed (schema forbids them).
+    - `name` is sent only when `nameAction == "rename"`; otherwise it is omitted
+      so Eagle keeps the existing name.
+    """
+    cleaned = []
+    for it in items:
+        if not isinstance(it, dict):
+            cleaned.append(it)
+            continue
+        entry = {k: v for k, v in it.items()
+                 if k not in ("oldName", "nameAction", "proposedName")}
+        action = it.get("nameAction", "rename")
+        if action == "rename":
+            if "name" not in entry and "proposedName" in it:
+                entry["name"] = it["proposedName"]
+            elif "name" not in entry:
+                print(f"warning: entry {it.get('id')} wants rename but has no "
+                      f"name/proposedName; name left unchanged")
+        else:
+            # Keep the existing name: omit `name` entirely.
+            entry.pop("name", None)
+        cleaned.append(entry)
+    return cleaned
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--tool", default="item_update", help="MCP tool name to call")
@@ -156,16 +191,11 @@ def main():
     if not ok:
         sys.exit("error: MCP initialize failed (is Eagle running?)")
 
-    # Strip review-only fields (e.g. `oldName` from a dry-run manifest) before
-    # sending, so the payload matches the tool's schema. The server rejects
-    # unknown fields when the schema forbids additional properties, so feeding
-    # the manifest verbatim would fail the whole batch.
-    cleaned = []
-    for it in items:
-        if not isinstance(it, dict):
-            cleaned.append(it)
-            continue
-        cleaned.append({k: v for k, v in it.items() if k != "oldName"})
+    # Strip review-only fields and honor the name-disposition decision.
+    # `clean_items` drops `oldName`/`nameAction`/`proposedName` (schema forbids
+    # them) and sends `name` only when `nameAction == "rename"`; otherwise it
+    # omits `name` so Eagle keeps the existing name (verified empirically).
+    cleaned = clean_items(items)
 
     batches = [cleaned[i:i + args.batch] for i in range(0, len(cleaned), args.batch)]
     total_requested = len(cleaned)

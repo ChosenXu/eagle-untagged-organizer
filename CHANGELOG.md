@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.3.0] - 2026-09-04
+
+### Added / 新增
+- Respect existing naming: the organizer now judges each asset's current name and either keeps it, proposes an overwrite (user chooses), or auto-renames only meaningless/random names. A `nameAction` (`keep` | `rename`) + `proposedName` field is added to the dry-run manifest so the user keeps final control.
+  尊重已有命名：整理器现在会判断每个素材的当前名称，保留、建议覆盖（由用户选择）或仅对无意义/随机名称自动重命名。dry-run manifest 新增 `nameAction`（`keep` | `rename`）与 `proposedName` 字段，最终决定权留在用户手中。
+- Three naming modes (A mixed / B trust-existing / C force-rename) selected once per run, so a batch of already-good names skips generation entirely.
+  三种命名模式（A 混合 / B 信任原名 / C 强制重命名）每次运行选一次，已妥善命名的整批可完全跳过命名生成。
+- `scripts/apply_eagle_batch.py` honors `nameAction`: it sends `name` only when `nameAction=="rename"`, otherwise omits it so Eagle preserves the original name (verified empirically). `nameAction` / `proposedName` / `oldName` are stripped before send.
+  `apply_eagle_batch.py` 遵循 `nameAction`：仅当 `rename` 时发送 `name`，否则省略以保留原名（已实测验证）。发送前剔除 `nameAction` / `proposedName` / `oldName`。
+- `scripts/build_dryrun.py` emits `nameAction` + `proposedName` alongside `oldName`.
+  `build_dryrun.py` 在 `oldName` 之外输出 `nameAction` 与 `proposedName`。
+
+### Notes / 说明
+- Backward compatible: manifests without `nameAction` still rename as before (default `rename`); the organizer workflow (pre-flight → analyze → dry-run → authorize → batch update → verify) is unchanged in shape.
+  向后兼容：无 `nameAction` 的 manifest 仍按原行为重命名（默认 `rename`）；organizer 工作流形态不变。
+
+---
+
 ## [2.2.0] - 2026-09-03
 
 ### Changed / 变更

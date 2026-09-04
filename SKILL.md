@@ -2,7 +2,7 @@
 name: eagle-untagged-organizer
 description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp connector). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items combined with a batch-organize intent. Produces a name, a structured annotation, and tags for each asset based on visual analysis, covering both UI/UX references and graphic design works.
 agent_created: true
-version: 2.2.0
+version: 2.3.0
 ---
 
 # Eagle Untagged Organizer
@@ -78,6 +78,12 @@ These three probes are decoupled from the batch and run before anything else. St
 **Step 0c. Rename capability probe (once per environment).**
 - The published `item_update` schema lists only `tags`, `folders`, `annotation`, `star`, but `name` is also accepted in practice. Verify by renaming a single test item, reading it back via `item_get`, then reverting. If `name` does not stick, fall back to `references/gotchas.md` (REST cannot rename; MCP `item_update` is required).
 
+**Step 0d. Naming mode (ask once before Phase 1).**
+Decide how to treat assets that already have a name, so the batch does not blindly overwrite good user-chosen names:
+- **Mode A (mixed, default)** — judge each asset individually per the Phase 2 name-disposition rules; the user reviews every decision in the dry-run manifest.
+- **Mode B (trust existing names)** — the user states the names are already good; skip name generation for all assets, set `nameAction: "keep"` on every entry, and produce only annotation + tags. Saves analysis time and tokens.
+- **Mode C (force regenerate)** — the user states to ignore existing names; set `nameAction: "rename"` on every entry and generate names for all, as the original v2.2.0 behavior.
+
 ### Phase 1 — Fetch untagged items
 
 - Call `item_get` with `isUntagged: true` (or `item_query` to locate previously-touched assets by name).
@@ -130,7 +136,28 @@ Formatting rules (hard):
 - **One field per line, each on its own newline.** Never join the fields into a single continuous line or paragraph.
 - Use the exact label for the target language followed by `：` (Chinese) or `: ` (English), then the value. No bullet markers, no blank lines between fields.
 
-**Name** — use the title formula from `references/templates.md`. Names are free text in the target language and are **independent** of tag casing/vocabulary.
+**Name disposition — respect existing naming (judge this for every asset before producing a name).**
+Inspect the asset's existing `name` (returned by Eagle) and classify it into one of three actions. Record the rationale so the user can review it in the dry-run manifest:
+
+- **KEEP** — the existing name is semantically complete and good quality (real topical words, accurately describes the asset, reads like a title or an accurate phrase). Do **not** regenerate; only add annotation + tags.
+- **PROPOSE** — the existing name is partially meaningful but vague / off-topic / awkward / over-long, or it looks clean but misses the asset's point. Keep the original by default, but also produce a `proposedName` so the user can choose to overwrite.
+- **AUTO_RENAME** — the existing name is meaningless or random (UUID; `IMG_` / `screenshot_` / `微信图片_` / `QQ截图` / `捕获` / `未命名` / `Untitled`; pure date-digit stamps; or empty). Regenerate per the title formula in `references/templates.md`.
+
+Score the existing name on two axes (0–2) to make the call reproducible:
+- **Relevance**: off-topic (0) / partially relevant (1) / accurately describes the asset (2)
+- **Form**: garbage / random (0) / readable but awkward (1) / clean title-style (2)
+
+| Relevance | Form | Action |
+|---|---|---|
+| ≤1 | ≤1 | AUTO_RENAME |
+| 2 | 2 | KEEP |
+| 2 | ≤1 | PROPOSE (content good, tidy the form) |
+| ≤1 | 2 | PROPOSE (form clean but off-topic) |
+| =1 (either axis) | — | PROPOSE |
+
+Conservative rule: only AUTO_RENAME when the name clearly matches a random-string pattern; otherwise prefer PROPOSE or KEEP so the user keeps control. In Mode B the disposition is moot — every asset is KEEP.
+
+**Name** — use the title formula from `references/templates.md`. Names are free text in the target language and are **independent** of tag casing/vocabulary. For KEEP / PROPOSE assets this step is skipped; for AUTO_RENAME and Mode C it produces `proposedName`.
 
 **Tags** — select verbatim from the vocabulary file matching the target language (see "Output Language"). See `references/templates.md` for the full template and an example.
 
@@ -138,16 +165,20 @@ Formatting rules (hard):
 
 Build a structured change manifest so the user can review and prune before anything is written. Do **not** write to Eagle in this phase.
 
-- For every analyzed asset, collect the proposed change: `id`, `oldName` → `name`, `tags`, `annotation` (one-line summary per item).
+- For every analyzed asset, collect the proposed change and emit it via `scripts/build_dryrun.py`: `id`, `oldName`, `nameAction` (`keep` | `rename`), `proposedName` (set only when `nameAction` is `rename` or `propose`), `tags`, `annotation` (one-line summary per item).
+  - `nameAction: "keep"` → the bulk script OMITs `name` for this item, so Eagle preserves the existing name. (Verified: omitting `name` from `item_update` leaves the name unchanged — no path churn, no overwrite.)
+  - `nameAction: "rename"` → the bulk script sends `name: proposedName`.
+  - KEEP assets carry an empty `proposedName` and are never renamed. PROPOSE assets carry the suggestion in `proposedName` but default to `nameAction: "keep"` — the user flips it to `rename` to apply the overwrite. AUTO_RENAME / Mode C assets carry `nameAction: "rename"` with the generated `proposedName`.
 - Write the manifest to a JSON file using `scripts/build_dryrun.py --input <analysis.json> --output dryrun_manifest.json`, so the user gets an editable list. (For very small batches ≤ 5 items, an inline table in the reply may suffice, but a file is always safer.)
-- Present a human-readable summary in the reply: total count, and a table of `id / old name → new name / tags / annotation summary`, so the user can spot bad renames or wrong tags at a glance.
-- Invite the user to edit the manifest file directly: delete any entry to skip it, or change `name`/`tags`/`annotation` to correct it. Only the entries left in the manifest will be applied.
+- Present a human-readable summary in the reply: total count, and a table of `id / old name → (new name) / 命名处理 / tags / annotation summary`, where `命名处理` is one of `保留原名` / `建议覆盖（原名⇄建议名）` / `自动重命名`. This lets the user spot bad renames or wrong tags at a glance.
+- Invite the user to edit the manifest file directly: delete any entry to skip it, change `name`/`tags`/`annotation` to correct it, or set an entry's `nameAction` to `keep` (preserve the original name) or `rename` (apply `proposedName`). Only the entries left in the manifest, with their final `nameAction`, will be applied.
 
 ### Phase 3b — Authorization gate (required before any write)
 
 Based on the reviewed manifest, require explicit confirmation:
 - **Scope**: how many assets remain in the manifest, and their IDs/names.
 - **Per-asset change**: old name → new name, old tags → new tags (tags are **replaced**, not merged), annotation summary — as they stand after the user's edits.
+- **Per-asset name handling**: for each entry, state whether the name is kept (`nameAction: keep`), proposed-overwrite (show both old name and `proposedName`), or auto-renamed — as they stand after the user's edits. No name is overwritten unless its `nameAction` is `rename`.
 - **Side effects**: renaming also changes the underlying file path; tag replacement discards any pre-existing tags.
 - **Confirmation**: small batches (≤ N items, default 10) may proceed with a single confirmation; large batches require an explicit "confirm all" that acknowledges tag overwrite.
 
