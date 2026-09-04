@@ -21,6 +21,7 @@ Output language is configurable: 简体中文 (default), 繁體中文（港式�
 3. **Safety first: preview before writing** — every change is surfaced as a dry-run manifest for your review, and it batch-writes to Eagle only after you approve. After writing, it re-reads each item to verify — it never silently mutates your library.
 4. **Scales to large batches** — for 100+ asset runs, a built-in Python script performs batch writes over stdio, so you don't cram huge payloads into the conversation.
 5. **Respects your existing names** — assets that already have a good name keep it by default and only get annotation + tags; only meaningless / random names are auto-renamed, and whether to overwrite is always your call in the dry-run manifest.
+6. **Recoverable batches** — before any write, one command snapshots every asset's current name / tags / annotation to a timestamped JSON; a companion script restores from it (after a `yes` confirmation) if a batch goes wrong.
 
 ## Install
 

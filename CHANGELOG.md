@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.4.0] - 2026-09-04
+
+### Added / 新增
+- Pre-write rollback snapshot: before the Phase 4 write, `scripts/snapshot_eagle_batch.py --manifest dryrun_manifest.json` exports a timestamped, read-only JSON of every batch asset's current `name` / `tags` / `annotation` (via `item_get` fullDetails) to `~/.workbuddy/skill-backups/eagle-untagged-organizer-rollbacks/`. It is read-only and never writes to Eagle; a failure only warns.
+  写入前回滚快照：在 Phase 4 写入前，`snapshot_eagle_batch.py --manifest dryrun_manifest.json` 将本批每个素材当前的 `name` / `tags` / `annotation`（经 `item_get` fullDetails）导出为带时间戳的只读 JSON，存放于项目外的回滚目录。该步骤只读、不写 Eagle，失败仅告警。
+- One-click rollback: `scripts/restore_eagle_snapshot.py --snapshot <file>` reads a snapshot and restores each item's original name / tags / annotation via `item_update`. It prints a summary and asks you to type `yes` before overwriting, so a bad batch is recoverable.
+  一键回滚：`restore_eagle_snapshot.py --snapshot <file>` 读取快照，经 `item_update` 还原每个素材的原文名 / 原标签 / 原注释。执行前打印摘要并要求输入 `yes` 确认，确保出错批次可恢复。
+
 ## [2.3.0] - 2026-09-04
 
 ### Added / 新增

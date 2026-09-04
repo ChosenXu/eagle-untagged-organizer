@@ -2,7 +2,7 @@
 name: eagle-untagged-organizer
 description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp connector). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items combined with a batch-organize intent. Produces a name, a structured annotation, and tags for each asset based on visual analysis, covering both UI/UX references and graphic design works.
 agent_created: true
-version: 2.3.0
+version: 2.4.0
 ---
 
 # Eagle Untagged Organizer
@@ -184,6 +184,13 @@ Based on the reviewed manifest, require explicit confirmation:
 
 Do not proceed to Phase 4 until the user confirms the final manifest.
 
+**Step 3c. Pre-write rollback snapshot (recommended safety net).**
+Before the Phase 4 write, capture the current state of every asset still in the manifest so a bad batch is recoverable:
+- Run `scripts/snapshot_eagle_batch.py --manifest dryrun_manifest.json`. It reads the id list from the manifest, fetches each item's current `name` / `tags` / `annotation` through `item_get` (fullDetails), and writes a timestamped JSON snapshot to `~/.workbuddy/skill-backups/eagle-untagged-organizer-rollbacks/eagle-rollback-YYYYMMDD-HHMMSS.json`.
+- This step is **read-only** and never writes to Eagle. If it fails (disk/permission), it only warns — the batch still proceeds.
+- The snapshot covers exactly this batch's assets (not the whole library) and is the rollback point for this run.
+- If a later batch goes wrong, restore with `scripts/restore_eagle_snapshot.py --snapshot <file>` — it prints a summary and asks you to type `yes` before overwriting anything.
+
 ### Phase 4 — Batch update
 
 - For small batches, build one `item_update` call with an `items` array (each item: `id`, `name`, `tags`, `annotation`).
@@ -195,6 +202,7 @@ Do not proceed to Phase 4 until the user confirms the final manifest.
 - Call `item_get` with the updated IDs to confirm names and tags.
 - Call `item_get` with `fullDetails: true` on at least one item to confirm the annotation was saved.
 - Re-read the items and confirm the returned count equals the requested count (large batches can silently drop entries).
+- If a verification check fails or the batch looks wrong, roll back with `scripts/restore_eagle_snapshot.py --snapshot <file>` using the Step 3c snapshot — it restores each item's original name / tags / annotation.
 
 ## Scope & Out of Scope
 
