@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | 中文
+[English](README.md) | 简体中文 | [繁体中文](README.zh-Hant.md)
 
 一个 [WorkBuddy](https://www.workbuddy.cn/) skill，通过 `eagle-mcp` 连接器批量整理 [Eagle](https://eagle.cool/) 中**未打标签**的设计素材——一次性完成 UI/UX 参考与平面设计作品的命名、标注和打标签。
 
