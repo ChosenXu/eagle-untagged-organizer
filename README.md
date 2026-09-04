@@ -56,6 +56,8 @@ references/
 scripts/
   apply_eagle_batch.py       # bulk-apply item updates via MCP stdio proxy
   build_dryrun.py            # build a reviewable dry-run manifest
+  snapshot_eagle_batch.py    # read-only: export a timestamped pre-write snapshot (id+name+tags+annotation)
+  restore_eagle_snapshot.py  # restore assets from a snapshot via item_update (asks "yes" before writing)
 ```
 
 ## License

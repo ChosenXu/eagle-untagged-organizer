@@ -56,6 +56,8 @@ references/
 scripts/
   apply_eagle_batch.py       # 通过 MCP stdio 代理批量应用更新
   build_dryrun.py            # 生成可审阅的 dry-run 变更清单
+  snapshot_eagle_batch.py    # 只读：导出带时间戳的写入前快照（id+名称+标签+标注）
+  restore_eagle_snapshot.py  # 从快照还原（item_update 写回，写入前需输入 yes 确认）
 ```
 
 ## 许可证
