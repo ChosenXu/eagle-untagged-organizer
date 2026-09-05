@@ -9,6 +9,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.5.0] - 2026-09-05
+
+### Added / 新增
+
+- Multilingual output expansion: the organizer now supports 日本語, 한국어, Русский, Español, and Deutsch as output languages, in addition to the existing 简体中文 / 繁體中文（港式）/ English — aligning the skill with Eagle's eight official UI languages.
+  多语言输出扩展：在原有 简体中文 / 繁體中文（港式）/ English 基础上，新增 日本語 / 한국어 / Русский / Español / Deutsch 五种输出语言，与 Eagle 官方 8 种界面语言对齐。
+- Five new controlled tag vocabularies: `references/vocabulary-ja.md`, `vocabulary-ko.md`, `vocabulary-ru.md`, `vocabulary-es.md`, `vocabulary-de.md` — each mirrors the canonical Chinese taxonomy term-for-term using industry-standard terms.
+  新增 5 份受控标签词表（ja/ko/ru/es/de），逐词镜像中文规范词表，采用行业通用术语。
+- Five new five-field annotation label sets and five routing rows in the "Output Language" section, so names, annotations, and tags follow the target language across all eight languages.
+  在「Output Language」节新增 5 套五段式标注标签与 5 行路由，使命名 / 标注 / 标签在全部 8 种语言下均跟随目标语言。
+- Auto-inherit output language: when the user's instruction is written in a supported language, that language is used as the output language; otherwise (unsupported or ambiguous) it falls back to **English** instead of Simplified Chinese.
+  产出语言自动继承：用户指令所用语言为受支持语言时，直接继承为产出语言；否则（不支持或无法判断）回退到**英语**而非简体中文。
+- `description` now carries trigger phrases in Japanese / Korean / Russian / Spanish / German, so the skill also fires when users write their request in those languages.
+  `description` 新增日 / 韩 / 俄 / 西 / 德 触发短语，用户用这些语言下指令时也能唤起技能。
+- Five new README translations: `README.ja.md`, `README.ko.md`, `README.ru.md`, `README.es.md`, `README.de.md`; all eight READMEs now cross-link through a full language switcher.
+  新增 5 份 README 译文；8 份 README 均通过完整语言切换器互链。
+- `references/templates.md`: two more five-field annotation examples — 日本語 and Русский — so non-Latin output languages have a copyable reference instead of depending solely on the SKILL.md routing table.
+  `references/templates.md`：新增 日本語 / Русский 两组五段式标注示例，非拉丁语系产出可直接参照，无需只依赖 SKILL.md 路由表。
+
+### Changed / 变更
+- Terminology pass on the five v2.5.0 vocabularies (17 tag replacements across 5 files, counts and dimension split A/B/C = 14/13/12 unchanged, no duplicates introduced). Terminology choices follow the industry-standard term in each language rather than a literal rendering of the English pivot.
+  对 v2.5.0 新增的 5 份词表做术语校准（5 个文件共 17 处替换；词数与维度分布 A/B/C = 14/13/12 不变，未引入重复标签）。选词依据各语言业界惯用说法，而非英文 pivot 的直译。
+  - `vocabulary-ru.md`: `Сеточная система`→`Модульная сетка` (standard RU term for grid system), `Карточный макет`→`Карточная раскладка` (the former reads as "card layout file"), `Швейцарский`→`Швейцарский стиль` (bare adjective; the canonical ZH term is 瑞士风, not 瑞士).
+    `vocabulary-ru.md`：Сеточная система→Модульная сетка（grid system 的俄文标准说法）、Карточный макет→Карточная раскладка（前者易读成"卡片版式文件"）、Швейцарский→Швейцарский стиль（裸形容词；中文规范词是「瑞士风」而非「瑞士」）。
+  - `vocabulary-de.md`: `Verlauf`→`Farbverlauf` (Verlauf alone means "course/progression"), `Schweizer`→`Schweizer Stil` (Schweizer alone means "Swiss person").
+    `vocabulary-de.md`：Verlauf→Farbverlauf（Verlauf 单独意为"过程／走向"）、Schweizer→Schweizer Stil（Schweizer 单独意为"瑞士人"）。
+  - `vocabulary-ko.md`: `진행 막대`→`진행 표시줄` (standard KO UI term), `스위스`→`스위스 스타일` (bare country name collides with photos of Switzerland), `디스플레이 타입`→`디스플레이 서체` (서체 is the KO typography term), and localized the two untranslated platform tags `Web UI`→`웹 UI`, `Mobile UI`→`모바일 UI`.
+    `vocabulary-ko.md`：진행 막대→진행 표시줄（韩文 UI 标准术语）、스위스→스위스 스타일（裸国名会与瑞士风景照撞车）、디스플레이 타입→디스플레이 서체（韩文排版术语为 서체），并本地化两条漏译的平台标签 Web UI→웹 UI、Mobile UI→모바일 UI。
+  - `vocabulary-ja.md`: `スイス`→`スイススタイル`, `ディスプレイタイプ`→`ディスプレイ書体` (書体 is the JA typography term), and localized `Web UI`→`ウェブUI`, `Mobile UI`→`モバイルUI` — matching the file's existing convention of katakana-izing loanwords (グラスモーフィズム, デュオトーン).
+    `vocabulary-ja.md`：スイス→スイススタイル、ディスプレイタイプ→ディスプレイ書体（日文排版术语为 書体），并本地化 Web UI→ウェブUI、Mobile UI→モバイルUI，与本文件既有的片假名化外来语惯例一致（グラスモーフィズム、デュオトーン）。
+  - `vocabulary-es.md`: `Sistema de rejilla`→`Sistema de retícula` (retícula is the graphic-design term; rejilla belongs to CSS Grid docs), `Suizo`→`Estilo suizo`, `Tipo display`→`Tipografía display`.
+    `vocabulary-es.md`：Sistema de rejilla→Sistema de retícula（平面设计标准术语为 retícula，rejilla 主要见于 CSS Grid 文档）、Suizo→Estilo suizo、Tipo display→Tipografía display。
+  - Deliberately kept: `UI` is retained as an initialism in every language (matching the canonical ZH `网页UI` / `移动UI`), as are established loanwords (`Dashboard`, `Glassmorphism`, `Memphis`, `Branding`, `Packaging`). Tag vocabularies are search keys, not prose — forcing a translation there hurts retrievability.
+    刻意保留：`UI` 作为首字母缩写在所有语言中均不翻译（与中文规范词「网页UI／移动UI」一致），已成业界通用的借词（Dashboard / Glassmorphism / Memphis / Branding / Packaging）同样保留。词表是检索键而非散文，硬译会损害可检索性。
+
+### Fixed / 修正
+- `references/templates.md`: corrected the outdated "in all three languages" wording to "all eight languages", and added a pointer to the field-label table in `SKILL.md`.
+  `references/templates.md`：将过时的「in all three languages」修正为 eight languages，并补充指向 SKILL.md 字段标签表的说明。
+- `scripts/apply_eagle_batch.py`: replaced the literal `/Users/<name>/...` example path inside a comment with a `<home>/Library/...` placeholder, so the "don't hardcode machine-specific paths" reminder no longer trips `validate`'s absolute-path check.
+  `scripts/apply_eagle_batch.py`：注释中的示例路径由 `/Users/<name>/...` 改为 `<home>/Library/...` 占位写法，提醒语义保留，且不再触发 validate 的绝对路径误报。
+- Multilingual review pass / 多语言校对（无母语者，机器自查 + 外部核验）：
+  - `README.ja.md`: replaced two Chinese terms that had leaked into the Japanese text — `动作前`→`実行前`, `多模态`→`マルチモーダル`; aligned the five-field label list with `SKILL.md` (`設計タイプ`→`タイプ`).
+    `README.ja.md`：修掉混入日文的两处中文词（动作前→実行前、多模态→マルチモーダル），并将五段式字段标签与 SKILL.md 对齐（設計タイプ→タイプ）。
+  - `README.ko.md`: `행동하기 전`→`실행 전`, `설계 유형`→`유형` (align with `SKILL.md`), replaced the nonsensical literal rendering `궤도에 올림` (of "on track") with `일관되게 유지됨`, and translated the leftover English `companion 스크립트`→`함께 제공되는 스크립트`.
+    `README.ko.md`：행동하기 전→실행 전、설계 유형→유형（与 SKILL.md 对齐）、误译「궤도에 올림」（"on track" 直译）→일관되게 유지됨，并补译残留英文 companion 스크립트。
+  - `README.de.md`: replaced the non-German pseudo-verb `snapshotet` with `sichert ... als Snapshot`.
+    `README.de.md`：非德语伪动词 snapshotet 改为 sichert ... als Snapshot。
+  - `SKILL.md`: the colon rule now states `：` for CJK vs `: ` for non-CJK, instead of the outdated "(Chinese) or (English)".
+    `SKILL.md`：冒号规则由过时的「(Chinese) 或 (English)」改为按 CJK / 非 CJK 区分。
+  - `references/templates.md`: polished the 日本語 example (視覚を牽引→視線を引きつけ, added missing predicate 配置されている, セリフ→セリフ体) and the Русский example (место→место проведения, reordered the "без засечек" clause, дуотон-печать→печать в технике дуотон).
+    `references/templates.md`：润色日文示例（补谓语、セリフ体）与俄文示例（место проведения、调整语序、改写生硬复合词）。
+
+### Notes / 说明
+- Backward compatible: existing 简体中文 / 繁體中文（港式）/ English behavior is unchanged. The prior "default 简体中文" is now "inherit invocation language, fall back to English".
+  向后兼容：原有三语行为不变；原「默认简体中文」改为「继承唤起语言，回退英语」。
+- Translations are model-generated drafts and have been through one machine review pass — 15 objective errors and 17 terminology choices corrected (see Fixed / Changed above). No native speaker was involved, so **long-sentence naturalness in Russian, Korean, and Japanese remains unverified**; a native-speaker read-through is still recommended before broad publication.
+  翻译为模型生成初稿，并已完成一轮机器校对（见上文 Fixed / Changed）：修正 15 处客观错误、17 处术语选择。全程无母语者参与，因此**俄 / 韩 / 日 长句的自然度仍未经验证**，公开发布前仍建议请母语者通读一遍。
+
+---
+
 ## [2.4.0] - 2026-09-04
 
 ### Added / 新增

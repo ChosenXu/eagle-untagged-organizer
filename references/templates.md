@@ -18,7 +18,7 @@ Examples:
 
 Eagle's `annotation` is a single text field. Produce the annotation as a **labeled block with exactly five fields, in this exact order**. These five fields are mandatory — do not add, remove, or rename them. Use the field labels for the target language (see "Output Language" in SKILL.md).
 
-**Field order (exact, in all three languages):**
+**Field order (exact, identical across all eight languages):**
 
 | # | 简体中文 | 繁體中文（港式） | English | Meaning |
 |---|---|---|---|---|
@@ -27,6 +27,8 @@ Eagle's `annotation` is a single text field. Produce the annotation as a **label
 | 3 | `视觉` | `視覺` | `Visual` | style, color, typography |
 | 4 | `用途` | `用途` | `Use` | what it serves as a reference for |
 | 5 | `参考价值` | `參考價值` | `Reference Value` | the standout merit worth collecting |
+
+For the other five languages (日本語 / 한국어 / Русский / Español / Deutsch), use the field labels listed in the "Output Language" section of `SKILL.md` — same order, same meaning.
 
 **Formatting rules (hard):**
 
@@ -73,6 +75,30 @@ Visual: Warm orange / deep brown duotone; large bold serif for the headline, san
 Use: A primary-visual reference for offline event promotion (music, exhibitions)
 Reference Value: Demonstrates restrained duotone printing with strong headline tension
 ```
+
+**Example (poster) — 日本語:**
+
+```
+タイプ：イベントポスター
+構成：中央対称の構図。見出しが視線を引きつけ、日付と会場は二次情報として下方に配置されている
+ビジュアル：温かみのあるオレンジ／深いブラウンのデュオトーン。見出しは大きな太字のセリフ体、補足情報はサンセリフ体
+用途：音楽や展覧会など、オフラインイベントの販促用メインビジュアルの参考
+参考価値：デュオトーン印刷の抑制された表現と、強い見出しの緊張感を示す好例
+```
+
+**Example (poster) — Русский:**
+
+```
+Тип: Афиша мероприятия
+Структура: Центрально-симметричная композиция; заголовок задаёт визуальный тон, дата и место проведения отведены на второй план
+Визуал: Тёплый оранжевый / глубокий коричневый дуотон; крупный жирный шрифт с засечками в заголовке и без засечек — во вспомогательном тексте
+Назначение: Референс для главного визуала офлайн-мероприятий (музыка, выставки)
+Справочная ценность: Демонстрирует сдержанную печать в технике дуотон и выразительное напряжение заголовка
+```
+
+> The remaining three languages (한국어 / Español / Deutsch) follow the same
+> structure — take the field labels from the "Output Language" table in
+> `SKILL.md`; do not paraphrase or re-translate them.
 
 ## Tagging Guidelines
 

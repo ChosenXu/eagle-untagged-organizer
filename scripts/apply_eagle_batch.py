@@ -39,9 +39,9 @@ import sys
 import threading
 import time
 
-# Keep these paths `~`-based and generic. Do NOT hardcode an absolute
-# `/Users/<name>/...` path — that would break on other machines and leak the
-# original author's macOS username when the skill is shared.
+# Keep these paths `~`-based and generic. Do NOT hardcode a machine-specific
+# absolute path (e.g. `<home>/Library/...`) — that would break on other
+# machines and leak the original author's username when the skill is shared.
 DEFAULT_PROXY_CANDIDATES = [
     os.path.expanduser("~/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"),
 ]
