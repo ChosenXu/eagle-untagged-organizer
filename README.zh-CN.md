@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | 简体中文 | [繁体中文](README.zh-Hant.md)
+[English](README.md) | 简体中文 | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
 
 一个 [WorkBuddy](https://www.workbuddy.cn/) skill，通过 `eagle-mcp` 连接器批量整理 [Eagle](https://eagle.cool/) 中**未打标签**的设计素材——一次性完成 UI/UX 参考与平面设计作品的命名、标注和打标签。
 
@@ -12,7 +12,7 @@
 2. **标注** —— 结构化的五段式区块（设计类型 / 结构 / 视觉 / 用途 / 参考价值）
 3. **标签** —— 从三维受控词表（设计领域 / 视觉风格 / 技法）中逐字原样选取
 
-输出语言可配置：简体中文（默认）、繁體中文（港式）、English。
+输出语言可配置：简体中文、繁體中文（港式）、English、日本語、한국어、Русский、Español、Deutsch。若用户指令所用语言属于受支持语言，则继承该语言；否则回退到英语。
 
 ## 核心优势
 
@@ -51,6 +51,11 @@ references/
   vocabulary.md              # 简体中文标签词表（规范版）
   vocabulary-zh-Hant.md      # 繁體中文（港式）标签词表
   vocabulary-en.md           # 英文标签词表
+  vocabulary-ja.md           # 日本語标签词表
+  vocabulary-ko.md           # 한국어标签词表
+  vocabulary-ru.md           # Русский标签词表
+  vocabulary-es.md           # Español 标签词表
+  vocabulary-de.md           # Deutsch 标签词表
   templates.md               # 命名公式与五段式标注模板
   gotchas.md                 # 常见坑与调用形态注意事项
 scripts/

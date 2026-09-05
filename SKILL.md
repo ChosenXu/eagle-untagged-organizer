@@ -1,8 +1,8 @@
 ---
 name: eagle-untagged-organizer
-description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp connector). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items combined with a batch-organize intent. Produces a name, a structured annotation, and tags for each asset based on visual analysis, covering both UI/UX references and graphic design works.
+description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp connector). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items combined with a batch-organize intent. Produces a name, a structured annotation, and tags for each asset based on visual analysis, covering both UI/UX references and graphic design works. Also triggers when the request is written in Japanese, Korean, Russian, Spanish, or German — e.g. 未タグ付けのアセットを整理して / 이글 미태그 자산 정리해줘 / разметь нетегированные ассеты в Игл / organizar activos sin etiquetar en Eagle / unmarkierte Assets in Eagle organisieren.
 agent_created: true
-version: 2.4.0
+version: 2.5.0
 ---
 
 # Eagle Untagged Organizer
@@ -22,15 +22,23 @@ For the organizer workflow, every selected asset produces three outputs:
 
 The skill body (instructions, logic, workflow) stays in English regardless of target language. Only the **three outputs written to Eagle** — the name, the annotation, and the tags — follow the target language.
 
-**Default target language: 简体中文 (Simplified Chinese).** Unless the user explicitly asks otherwise, produce Chinese names/annotations and select tags from `references/vocabulary.md`.
+**Target language selection (in priority order):**
+1. **Explicit override** — if the user names a specific output language, use it.
+2. **Invocation-language inheritance** — if the user's instruction is written in one of the supported languages below, inherit that language as the target (so a Japanese request yields Japanese names/annotations/tags).
+3. **Fallback** — otherwise (instruction language unsupported, e.g. French, or ambiguous/undecidable), fall back to **English**, not Simplified Chinese.
 
-When the user asks for a specific output language, route to the matching files:
+When the target language is set (explicitly, by inheritance, or by fallback), route to the matching files:
 
 | Target language | Vocabulary file | Annotation field labels |
 |---|---|---|
-| 简体中文 (default) | `references/vocabulary.md` | `设计类型 / 结构 / 视觉 / 用途 / 参考价值` |
+| 简体中文 | `references/vocabulary.md` | `设计类型 / 结构 / 视觉 / 用途 / 参考价值` |
 | 繁體中文（港式） | `references/vocabulary-zh-Hant.md` | `設計類型 / 結構 / 視覺 / 用途 / 參考價值` |
 | English | `references/vocabulary-en.md` | `Type / Structure / Visual / Use / Reference Value` |
+| 日本語 | `references/vocabulary-ja.md` | `タイプ / 構成 / ビジュアル / 用途 / 参考価値` |
+| 한국어 | `references/vocabulary-ko.md` | `유형 / 구조 / 비주얼 / 용도 / 참고 가치` |
+| Русский | `references/vocabulary-ru.md` | `Тип / Структура / Визуал / Назначение / Справочная ценность` |
+| Español | `references/vocabulary-es.md` | `Tipo / Estructura / Visual / Uso / Valor de referencia` |
+| Deutsch | `references/vocabulary-de.md` | `Typ / Struktur / Visual / Verwendung / Referenzwert` |
 
 The five annotation fields stay in the same logical order and meaning across all languages — only the labels and the tag vocabulary change.
 
@@ -52,9 +60,14 @@ Load these `references/` files only when needed, not all at once:
 
 | File | When to read |
 |---|---|
-| `references/vocabulary.md` | Before producing tags in 简体中文 (default) — the canonical tag list (select verbatim, no invented terms) |
+| `references/vocabulary.md` | Before producing tags in 简体中文 — the canonical tag list (select verbatim, no invented terms) |
 | `references/vocabulary-zh-Hant.md` | Before producing tags in 繁體中文（港式） — Hong Kong-convention Traditional Chinese tag list |
 | `references/vocabulary-en.md` | Before producing tags in English — industry-standard English tag list |
+| `references/vocabulary-ja.md` | Before producing tags in 日本語 — Japanese tag list |
+| `references/vocabulary-ko.md` | Before producing tags in 한국어 — Korean tag list |
+| `references/vocabulary-ru.md` | Before producing tags in Русский — Russian tag list |
+| `references/vocabulary-es.md` | Before producing tags in Español — Spanish tag list |
+| `references/vocabulary-de.md` | Before producing tags in Deutsch — German tag list |
 | `references/templates.md` | Before producing names/annotations — the naming formula and the five-field annotation template (also inlined in Phase 2) |
 | `references/gotchas.md` | Before the first `item_update` of a session, and whenever a call behaves unexpectedly |
 
@@ -126,15 +139,65 @@ Use: <value>
 Reference Value: <value>
 ```
 
-- `设计类型` / `設計類型` / `Type` = the design domain/type (海报 / 品牌 / 包装 / 编辑 / 图标 / 版式 / 信息图表 / 网页UI / 移动UI / 仪表盘 …).
-- `结构` / `結構` / `Structure` = layout/composition and information hierarchy.
-- `视觉` / `視覺` / `Visual` = visual style, color scheme, typography.
-- `用途` / `用途` / `Use` = what it serves as a reference for.
-- `参考价值` / `參考價值` / `Reference Value` = the standout merit worth collecting.
+**日本語:**
+
+```
+タイプ：<値>
+構成：<値>
+ビジュアル：<値>
+用途：<値>
+参考価値：<値>
+```
+
+**한국어:**
+
+```
+유형：<값>
+구조：<값>
+비주얼：<값>
+용도：<값>
+참고 가치：<값>
+```
+
+**Русский:**
+
+```
+Тип: <значение>
+Структура: <значение>
+Визуал: <значение>
+Назначение: <значение>
+Справочная ценность: <значение>
+```
+
+**Español:**
+
+```
+Tipo: <valor>
+Estructura: <valor>
+Visual: <valor>
+Uso: <valor>
+Valor de referencia: <valor>
+```
+
+**Deutsch:**
+
+```
+Typ: <Wert>
+Struktur: <Wert>
+Visual: <Wert>
+Verwendung: <Wert>
+Referenzwert: <Wert>
+```
+
+- `设计类型` / `設計類型` / `Type` / `タイプ` / `유형` / `Тип` / `Tipo` / `Typ` = the design domain/type (海报 / 品牌 / 包装 / 编辑 / 图标 / 版式 / 信息图表 / 网页UI / 移动UI / 仪表盘 …).
+- `结构` / `結構` / `Structure` / `構成` / `구조` / `Структура` / `Estructura` / `Struktur` = layout/composition and information hierarchy.
+- `视觉` / `視覺` / `Visual` / `ビジュアル` / `비주얼` / `Визуал` / `Visual` / `Visual` = visual style, color scheme, typography.
+- `用途` / `用途` / `Use` / `용도` / `Назначение` / `Uso` / `Verwendung` = what it serves as a reference for.
+- `参考价值` / `參考價值` / `Reference Value` / `参考価値` / `참고 가치` / `Справочная ценность` / `Valor de referencia` / `Referenzwert` = the standout merit worth collecting.
 
 Formatting rules (hard):
 - **One field per line, each on its own newline.** Never join the fields into a single continuous line or paragraph.
-- Use the exact label for the target language followed by `：` (Chinese) or `: ` (English), then the value. No bullet markers, no blank lines between fields.
+- Use the exact label for the target language followed by `：` (CJK: 简体中文 / 繁體中文（港式） / 日本語 / 한국어) or `: ` (non-CJK: English / Русский / Español / Deutsch), then the value. No bullet markers, no blank lines between fields.
 
 **Name disposition — respect existing naming (judge this for every asset before producing a name).**
 Inspect the asset's existing `name` (returned by Eagle) and classify it into one of three actions. Record the rationale so the user can review it in the dry-run manifest:

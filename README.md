@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md)
+[English](README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
 
 A [WorkBuddy](https://www.workbuddy.cn/) skill that batch-organizes **untagged** design assets in [Eagle](https://eagle.cool/) via the `eagle-mcp` connector — renaming, annotating, and tagging UI/UX references and graphic-design works in one pass.
 
@@ -12,7 +12,7 @@ For every selected untagged asset it produces three outputs, written back to Eag
 2. **Annotation** — a structured five-field block (设计类型 / 结构 / 视觉 / 用途 / 参考价值)
 3. **Tags** — selected verbatim from a controlled three-dimension vocabulary (design domain / visual style / technique)
 
-Output language is configurable: 简体中文 (default), 繁體中文（港式）, or English.
+Output language is configurable: 简体中文, 繁體中文（港式）, English, 日本語, 한국어, Русский, Español, Deutsch. When the user's instruction is written in a supported language, that language is inherited as the output language; otherwise (unsupported or ambiguous) it falls back to English.
 
 ## Highlights
 
@@ -51,6 +51,11 @@ references/
   vocabulary.md              # 简体中文 tag taxonomy (canonical)
   vocabulary-zh-Hant.md      # 繁體中文（港式） tag taxonomy
   vocabulary-en.md           # English tag taxonomy
+  vocabulary-ja.md           # 日本語 tag taxonomy
+  vocabulary-ko.md           # 한국어 tag taxonomy
+  vocabulary-ru.md           # Русский tag taxonomy
+  vocabulary-es.md           # Español tag taxonomy
+  vocabulary-de.md           # Deutsch tag taxonomy
   templates.md               # naming formula & five-field annotation template
   gotchas.md                 # pitfalls & call-shape gotchas
 scripts/
