@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.5.1] - 2026-09-07
+
+### Added / 新增
+- Reverse cross-link to the companion `eagle-tag-governance` skill: all 8 READMEs now carry a callout that points users with an already-tangled tag vocabulary to that skill, and states the two skills are independent. This completes the bidirectional link — `eagle-tag-governance` already linked here from its v1.0.0 README.
+  新增指向配套技能 `eagle-tag-governance` 的反向互链：8 份 README 现均含一条提示框，将已有混乱标签词表的用户引导至该技能，并说明两者相互独立。至此双向互链完成——`eagle-tag-governance` 自 v1.0.0 起即已反向指向本技能。
+
+### Notes / 说明
+- Documentation-only release (patch). The organizer workflow, the three-dimension tag vocabularies, and all scripts are unchanged.
+  纯文档发布（补丁级）。organizer 工作流、三维受控标签词表与全部脚本均无变化。
+
+---
+
 ## [2.5.0] - 2026-09-05
 
 ### Added / 新增
