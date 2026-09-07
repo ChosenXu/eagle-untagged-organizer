@@ -43,6 +43,8 @@ Or copy the folder manually into `~/.workbuddy/skills/`.
 
 Mention Eagle / `eagle-mcp` / untagged assets with a batch-organize intent, and the skill drives the workflow. See [`SKILL.md`](SKILL.md) for the full workflow (pre-flight checks → analyze → dry-run preview → authorization gate → batch update → verify).
 
+> Need to clean up a messy tag vocabulary (merge, rename, or retire tags) instead? Use [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance). The two skills are independent.
+
 ## Structure
 
 ```

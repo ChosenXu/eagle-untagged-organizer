@@ -43,6 +43,8 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 
 Eagle / `eagle-mcp` / 未タグ付け素材に一括整理の意図を添えて言及すると、スキルがワークフローを駆動します。完全なワークフロー（事前チェック → 分析 → dry-run プレビュー → 承認ゲート → 一括更新 → 検証）は [`SKILL.md`](SKILL.md) を参照。
 
+> 逆に、乱雑なタグ語彙を整理（タグの統合 / リネーム / 廃止）したい場合は、[`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance) をご利用ください。両スキルは独立しています。
+
 ## 構成
 
 ```

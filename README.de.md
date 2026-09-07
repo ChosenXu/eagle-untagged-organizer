@@ -43,6 +43,8 @@ Oder kopiere den Ordner manuell nach `~/.workbuddy/skills/`.
 
 Erwähne Eagle / `eagle-mcp` / nicht markierte Assets mit dem Vorsatz einer Stapelorganisation, und der Skill steuert den Workflow. Siehe [`SKILL.md`](SKILL.md) für den vollständigen Workflow (Vorabprüfungen → analysieren → Dry-Run-Vorschau → Autorisierungs-Gate → Stapelupdate → verifizieren).
 
+> Musst du stattdessen ein chaotisches Tag-Vokabular bereinigen (Tags zusammenführen, umbenennen oder ausmustern)? Nutze [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance). Die beiden Skills sind unabhängig.
+
 ## Struktur
 
 ```

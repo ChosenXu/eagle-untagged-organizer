@@ -43,6 +43,8 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 
 Eagle / `eagle-mcp` / 태그 없는 에셋을 일괄 정리 의도와 함께 언급하면 스킬이 워크플로를 주도합니다. 전체 워크플로(사전 점검 → 분석 → dry-run 미리보기 → 승인 게이트 → 일괄 업데이트 → 검증)는 [`SKILL.md`](SKILL.md)를 참조하세요.
 
+> 반대로 엉망인 태그 어휘를 정리(태그 병합 / 이름 변경 / 폐기)하고 싶다면 [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance)를 사용하세요. 두 스킬은 서로 독립적입니다.
+
 ## 구조
 
 ```

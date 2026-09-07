@@ -43,6 +43,8 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 
 当提到 Eagle / `eagle-mcp` / 未打标签素材并带有批量整理意图时，本 skill 会自动驱动工作流。完整工作流（预检 → 分析 → dry-run 预览 → 授权门槛 → 批量更新 → 校验）见 [`SKILL.md`](SKILL.md)。
 
+> 需要反过来清理混乱的标签词表（合并 / 重命名 / 退役标签）？请使用 [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance)。两个技能相互独立。
+
 ## 目录结构
 
 ```

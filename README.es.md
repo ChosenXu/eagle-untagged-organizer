@@ -43,6 +43,8 @@ O copia la carpeta manualmente en `~/.workbuddy/skills/`.
 
 Menciona Eagle / `eagle-mcp` / activos sin etiquetar con intención de organización por lotes, y la habilidad conduce el flujo de trabajo. Consulta [`SKILL.md`](SKILL.md) para el flujo completo (comprobaciones previas → analizar → vista previa de dry-run → puerta de autorización → actualización por lotes → verificar).
 
+> ¿Necesitas, en cambio, limpiar un vocabulario de etiquetas desordenado (fusionar, renombrar o retirar etiquetas)? Usa [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance). Ambas skills son independientes.
+
 ## Estructura
 
 ```
