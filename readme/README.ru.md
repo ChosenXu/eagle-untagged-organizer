@@ -2,7 +2,7 @@
 
 [English](../README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | Русский | [Español](README.es.md) | [Deutsch](README.de.md)
 
-Навык [WorkBuddy](https://www.workbuddy.cn/), который пакетно упорядочивает **не размеченные тегами** дизайн-ассеты в [Eagle](https://eagle.cool/) через коннектор `eagle-mcp` — переименование, аннотирование и тегирование UI/UX-референсов и графических работ за один проход.
+Навык, совместимый с открытым стандартом [Agent Skills](https://agentskills.io), который пакетно упорядочивает **не размеченные тегами** дизайн-ассеты в [Eagle](https://eagle.cool/) через MCP-сервер `eagle-mcp` — переименование, аннотирование и тегирование UI/UX-референсов и графических работ за один проход. Работает в Claude Code, Codex CLI, Gemini CLI, GitHub Copilot, Cursor и WorkBuddy.
 
 ## Что он делает
 
@@ -25,19 +25,39 @@
 
 ## Установка
 
-Клонируйте репозиторий в каталог навыков WorkBuddy:
+Этот навык соответствует открытому стандарту [Agent Skills](https://agentskills.io) (`SKILL.md` + `scripts/` + `references/`) и работает в любом совместимом AI-агенте. Клонируйте репозиторий в каталог навыков вашего агента:
+
+| Агент | Пользовательский каталог | Каталог проекта |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
+| Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
+| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
+| WorkBuddy | `~/.workbuddy/skills/` | — |
+
+Подсказка: `~/.agents/skills/` — межагентный общий каталог: Codex CLI, Gemini CLI, GitHub Copilot и Cursor читают его нативно, Claude Code также сканирует его как запасной путь. Одна установка — обнаружение во всех агентах.
 
 ```bash
 git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
-  ~/.workbuddy/skills/eagle-untagged-organizer
+  ~/.agents/skills/eagle-untagged-organizer
 ```
 
-Или скопируйте папку вручную в `~/.workbuddy/skills/`.
+Или скопируйте папку вручную в любой из перечисленных каталогов.
 
 ## Требования
 
 - Приложение Eagle должно быть запущено.
-- `eagle-mcp` должен быть настроен в `~/.workbuddy/mcp.json` и доверен в панели коннекторов.
+- `eagle-mcp` (MCP-сервер, встроенный в официальный плагин Eagle) должен быть зарегистрирован в конфигурации MCP вашего агента:
+
+| Агент | Конфигурация MCP |
+|---|---|
+| Claude Code | `claude mcp add` или `.mcp.json` проекта |
+| Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
+| Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
+| GitHub Copilot | `.mcp.json` (корень репозитория) |
+| Cursor | `~/.cursor/mcp.json` |
+| WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
 
 ## Использование
 

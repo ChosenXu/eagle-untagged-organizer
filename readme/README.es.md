@@ -2,7 +2,7 @@
 
 [English](../README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | Español | [Deutsch](README.de.md)
 
-Una habilidad de [WorkBuddy](https://www.workbuddy.cn/) que organiza por lotes los activos de diseño **sin etiquetar** en [Eagle](https://eagle.cool/) a través del conector `eagle-mcp` — renombrando, anotando y etiquetando referencias UI/UX y obras de diseño gráfico en una sola pasada.
+Una habilidad compatible con el estándar abierto [Agent Skills](https://agentskills.io) que organiza por lotes los activos de diseño **sin etiquetar** en [Eagle](https://eagle.cool/) a través del servidor MCP `eagle-mcp` — renombrando, anotando y etiquetando referencias UI/UX y obras de diseño gráfico en una sola pasada. Funciona con Claude Code, Codex CLI, Gemini CLI, GitHub Copilot, Cursor y WorkBuddy.
 
 ## Qué hace
 
@@ -25,19 +25,39 @@ El idioma de salida es configurable (简体中文 / 繁體中文（港式）/ En
 
 ## Instalar
 
-Clona este repositorio en tu directorio de habilidades de WorkBuddy:
+Esta habilidad sigue el estándar abierto [Agent Skills](https://agentskills.io) (`SKILL.md` + `scripts/` + `references/`) y funciona con cualquier agente de IA compatible. Clona este repositorio en el directorio de habilidades de tu agente:
+
+| Agente | Directorio de usuario | Directorio de proyecto |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
+| Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
+| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
+| WorkBuddy | `~/.workbuddy/skills/` | — |
+
+Consejo: `~/.agents/skills/` es el directorio común entre agentes: Codex CLI, Gemini CLI, GitHub Copilot y Cursor lo leen de forma nativa, y Claude Code también lo escanea como ruta alternativa. Una instalación, varios agentes.
 
 ```bash
 git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
-  ~/.workbuddy/skills/eagle-untagged-organizer
+  ~/.agents/skills/eagle-untagged-organizer
 ```
 
-O copia la carpeta manualmente en `~/.workbuddy/skills/`.
+O copia la carpeta manualmente en cualquiera de los directorios anteriores.
 
 ## Requisitos previos
 
 - La aplicación de escritorio Eagle debe estar en ejecución.
-- `eagle-mcp` debe estar configurado en `~/.workbuddy/mcp.json` y ser confiable en el panel de conectores.
+- `eagle-mcp` (el servidor MCP incluido en el plugin oficial de Eagle) debe registrarse en la configuración MCP de tu agente:
+
+| Agente | Configuración MCP |
+|---|---|
+| Claude Code | `claude mcp add` o `.mcp.json` del proyecto |
+| Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
+| Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
+| GitHub Copilot | `.mcp.json` (raíz del repositorio) |
+| Cursor | `~/.cursor/mcp.json` |
+| WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
 
 ## Uso
 

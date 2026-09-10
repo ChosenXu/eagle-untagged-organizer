@@ -2,7 +2,7 @@
 
 [English](../README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | 한국어 | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
 
-[WorkBuddy](https://www.workbuddy.cn/) 스킬. `eagle-mcp` 커넥터를 통해 [Eagle](https://eagle.cool/)의 **태그 없는** 디자인 에셋을 일괄 정리합니다 — UI/UX 레퍼런스와 그래픽 디자인 작품의 이름 변경, 주석 추가, 태그 지정을 한 번에 수행합니다.
+[Agent Skills](https://agentskills.io) 오픈 표준 호환 스킬. `eagle-mcp` MCP 서버를 통해 [Eagle](https://eagle.cool/)의 **태그 없는** 디자인 에셋을 일괄 정리합니다 — UI/UX 레퍼런스와 그래픽 디자인 작품의 이름 변경, 주석 추가, 태그 지정을 한 번에 수행합니다. Claude Code, Codex CLI, Gemini CLI, GitHub Copilot, Cursor, WorkBuddy에서 작동합니다.
 
 ## 기능
 
@@ -25,19 +25,39 @@
 
 ## 설치
 
-저장소를 WorkBuddy 스킬 디렉터리에 클론:
+이 스킬은 [Agent Skills](https://agentskills.io) 오픈 표준(`SKILL.md` + `scripts/` + `references/`)을 따르며, 호환되는 모든 AI 에이전트에서 동작합니다. 저장소를 사용 중인 에이전트의 스킬 디렉터리에 클론하세요:
+
+| 에이전트 | 사용자 수준 | 프로젝트 수준 |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
+| Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
+| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
+| WorkBuddy | `~/.workbuddy/skills/` | — |
+
+팁: `~/.agents/skills/`는 에이전트 공통 디렉터리입니다 — Codex CLI, Gemini CLI, GitHub Copilot, Cursor는 기본적으로 읽고, Claude Code도 폴백 경로로 스캔합니다. 한 번 설치로 여러 에이전트에서 발견됩니다.
 
 ```bash
 git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
-  ~/.workbuddy/skills/eagle-untagged-organizer
+  ~/.agents/skills/eagle-untagged-organizer
 ```
 
-또는 폴더를 `~/.workbuddy/skills/`에 수동 복사.
+또는 폴더를 위 디렉터리 중 하나에 수동으로 복사하세요.
 
 ## 사전 요구사항
 
 - Eagle 데스크톱 앱이 실행 중이어야 합니다.
-- `eagle-mcp`가 `~/.workbuddy/mcp.json`에 구성되고 커넥터 패널에서 신뢰되어야 합니다.
+- `eagle-mcp`(Eagle 공식 플러그인에 포함된 MCP 서버)를 사용 중인 에이전트의 MCP 설정에 등록해야 합니다:
+
+| 에이전트 | MCP 설정 |
+|---|---|
+| Claude Code | `claude mcp add` 또는 프로젝트 `.mcp.json` |
+| Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
+| Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
+| GitHub Copilot | `.mcp.json` (저장소 루트) |
+| Cursor | `~/.cursor/mcp.json` |
+| WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
 
 ## 사용법
 

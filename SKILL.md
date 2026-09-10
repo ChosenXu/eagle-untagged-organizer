@@ -1,15 +1,15 @@
 ---
 name: eagle-untagged-organizer
-description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp connector). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items combined with a batch-organize intent. Produces a name, a structured annotation, and tags for each asset based on visual analysis, covering both UI/UX references and graphic design works. Also triggers when the request is written in Japanese, Korean, Russian, Spanish, or German — e.g. 未タグ付けのアセットを整理して / 이글 미태그 자산 정리해줘 / разметь нетегированные ассеты в Игл / organizar activos sin etiquetar en Eagle / unmarkierte Assets in Eagle organisieren.
+description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp MCP server). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items with a batch-organize intent; also triggers when the request is written in Japanese, Korean, Russian, Spanish, or German. Produces a name, a structured five-field annotation, and tags from a controlled three-dimension vocabulary for each asset, based on visual analysis of UI/UX references and graphic design works.
 agent_created: true
-version: 2.5.2
+version: 2.6.0
 ---
 
 # Eagle Untagged Organizer
 
 ## Overview
 
-Batch-organize untagged Eagle library assets via the `eagle-mcp` connector. This skill handles **UI/UX references** (web pages, mobile apps, dashboards, settings) and **graphic design works** (brand guidelines, posters, packaging, editorial spreads, icon sets, infographics, typography specimens).
+Batch-organize untagged Eagle library assets via the `eagle-mcp` MCP server. This skill handles **UI/UX references** (web pages, mobile apps, dashboards, settings) and **graphic design works** (brand guidelines, posters, packaging, editorial spreads, icon sets, infographics, typography specimens).
 
 It has a single workflow — the **Untagged organizer**: for every selected asset, produce a name, annotation, and tags, written in one `item_update` call.
 
@@ -51,7 +51,7 @@ The five annotation fields stay in the same logical order and meaning across all
 ## Prerequisites
 
 - Eagle desktop app must be running, because `eagle-mcp` is an SSE proxy that connects to Eagle itself.
-- `eagle-mcp` must be configured in `~/.workbuddy/mcp.json` under `mcpServers` and trusted in the connector panel.
+- `eagle-mcp` must be registered as a stdio MCP server in the host agent's MCP configuration (per-platform paths: see the README Install section) and enabled there.
 - The connector exposes a set of tools; the key ones used by this skill are `item_get`, `item_count`, and `item_update`.
 
 ## Supporting Files
@@ -86,7 +86,7 @@ These three probes are decoupled from the batch and run before anything else. St
 - **Not multimodal capable** → stop everything immediately; do not enter the batch. Tell the user to switch to a multimodal-capable model and retry, since naming/annotation/tagging all depend on visual understanding.
 
 **Step 0b. Connection check.**
-- Confirm `eagle-mcp` is nested under `mcpServers` in `~/.workbuddy/mcp.json`. Test the connection (spawn the MCP server and send an `initialize` JSON-RPC request over stdio) if needed.
+- Confirm `eagle-mcp` is registered under `mcpServers` (or the host's equivalent) in the host agent's MCP configuration. Test the connection (spawn the MCP server and send an `initialize` JSON-RPC request over stdio) if needed.
 
 **Step 0c. Rename capability probe (once per environment).**
 - The published `item_update` schema lists only `tags`, `folders`, `annotation`, `star`, but `name` is also accepted in practice. Verify by renaming a single test item, reading it back via `item_get`, then reverting. If `name` does not stick, fall back to `references/gotchas.md` (REST cannot rename; MCP `item_update` is required).
@@ -249,7 +249,7 @@ Do not proceed to Phase 4 until the user confirms the final manifest.
 
 **Step 3c. Pre-write rollback snapshot (recommended safety net).**
 Before the Phase 4 write, capture the current state of every asset still in the manifest so a bad batch is recoverable:
-- Run `scripts/snapshot_eagle_batch.py --manifest dryrun_manifest.json`. It reads the id list from the manifest, fetches each item's current `name` / `tags` / `annotation` through `item_get` (fullDetails), and writes a timestamped JSON snapshot to `~/.workbuddy/skill-backups/eagle-untagged-organizer-rollbacks/eagle-rollback-YYYYMMDD-HHMMSS.json`.
+- Run `scripts/snapshot_eagle_batch.py --manifest dryrun_manifest.json`. It reads the id list from the manifest, fetches each item's current `name` / `tags` / `annotation` through `item_get` (fullDetails), and writes a timestamped JSON snapshot to `~/.eagle-untagged-organizer/rollbacks/eagle-rollback-YYYYMMDD-HHMMSS.json`.
 - This step is **read-only** and never writes to Eagle. If it fails (disk/permission), it only warns — the batch still proceeds.
 - The snapshot covers exactly this batch's assets (not the whole library) and is the rollback point for this run.
 - If a later batch goes wrong, restore with `scripts/restore_eagle_snapshot.py --snapshot <file>` — it prints a summary and asks you to type `yes` before overwriting anything.

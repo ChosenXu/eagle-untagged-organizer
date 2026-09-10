@@ -2,7 +2,7 @@
 
 [English](../README.md) | 简体中文 | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
 
-一个 [WorkBuddy](https://www.workbuddy.cn/) skill，通过 `eagle-mcp` 连接器批量整理 [Eagle](https://eagle.cool/) 中**未打标签**的设计素材——一次性完成 UI/UX 参考与平面设计作品的命名、标注和打标签。
+一个兼容 [Agent Skills](https://agentskills.io) 开放标准的 skill，通过 `eagle-mcp` MCP 服务器批量整理 [Eagle](https://eagle.cool/) 中**未打标签**的设计素材——一次性完成 UI/UX 参考与平面设计作品的命名、标注和打标签。适用于 Claude Code、Codex CLI、Gemini CLI、GitHub Copilot、Cursor 与 WorkBuddy。
 
 ## 它能做什么
 
@@ -25,19 +25,39 @@
 
 ## 安装
 
-将本仓库克隆到你的 WorkBuddy skills 目录：
+本 skill 遵循 [Agent Skills](https://agentskills.io) 开放标准（`SKILL.md` + `scripts/` + `references/`），可在任意兼容的 AI Agent 中使用。将本仓库克隆到你所用 Agent 的 skills 目录：
+
+| 平台 | 用户级目录 | 项目级目录 |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
+| Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
+| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
+| WorkBuddy | `~/.workbuddy/skills/` | — |
+
+提示：`~/.agents/skills/` 是跨平台通用目录——Codex CLI、Gemini CLI、GitHub Copilot、Cursor 均原生读取，Claude Code 也会作为兜底路径扫描。一处安装，多平台发现。
 
 ```bash
 git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
-  ~/.workbuddy/skills/eagle-untagged-organizer
+  ~/.agents/skills/eagle-untagged-organizer
 ```
 
-或者手动把整个文件夹拷贝到 `~/.workbuddy/skills/` 下。
+或者手动把整个文件夹拷贝到上述任意目录下。
 
 ## 前置条件
 
 - Eagle 桌面端必须正在运行。
-- `eagle-mcp` 需在 `~/.workbuddy/mcp.json` 中配置，并在连接器面板中信任。
+- `eagle-mcp`（Eagle 官方插件内置的 MCP 服务器）需注册到你所用 Agent 的 MCP 配置中：
+
+| 平台 | MCP 配置 |
+|---|---|
+| Claude Code | `claude mcp add` 或项目 `.mcp.json` |
+| Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
+| Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
+| GitHub Copilot | `.mcp.json`（仓库根目录） |
+| Cursor | `~/.cursor/mcp.json` |
+| WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
 
 ## 使用方法
 

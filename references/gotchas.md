@@ -12,11 +12,11 @@
 
 ## Connection
 
-- The `eagle-mcp` server (WorkBuddy mcp.json uses `command: node` + `mcp-proxy.js`, i.e. a **stdio** MCP server; the proxy internally bridges to Eagle's HTTP/SSE endpoint at `localhost:41596`) requires Eagle to be running. If tools return connection errors, check Eagle is open first.
+- The `eagle-mcp` server (typically registered as `command: node` + `mcp-proxy.js`, a **stdio** MCP server; the proxy internally bridges to Eagle's HTTP/SSE endpoint at `localhost:41596`) requires Eagle to be running. If tools return connection errors, check Eagle is open first.
 
 ## Call shape (the only common failure mode)
 
-- **Array params: pass plain JSON arrays, never wrap in `{item: …}`.** The WorkBuddy MCP wrapper does **no** transformation — it validates your `params` verbatim against the server's JSON schema. So `items` MUST be `["…"]` / `[{…}, {…}]`, and `ids`/`tags` MUST be `["…"]`. Wrapping like `{item: {...}}` or `{item: [...]}` violates `additionalProperties:false` / `type:array` and returns `"/items: must be array"` (or `"/ids: must be array"`). This is a **call-shape mistake, not a tool-chain bug**.
+- **Array params: pass plain JSON arrays, never wrap in `{item: …}`.** The host agent's MCP tool-call layer does **no** transformation — it validates your `params` verbatim against the server's JSON schema. So `items` MUST be `["…"]` / `[{…}, {…}]`, and `ids`/`tags` MUST be `["…"]`. Wrapping like `{item: {...}}` or `{item: [...]}` violates `additionalProperties:false` / `type:array` and returns `"/items: must be array"` (or `"/ids: must be array"`). This is a **call-shape mistake, not a tool-chain bug**.
 
 ## Bulk-apply gotchas (learned operating at 100+ items)
 

@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.6.0] - 2026-09-10
+
+### Changed / 变更
+- Cross-platform release: the skill is now positioned as an [Agent Skills](https://agentskills.io)-compatible module that works with Claude Code, Codex CLI, Gemini CLI, GitHub Copilot, Cursor, and WorkBuddy. All WorkBuddy-specific wording in `SKILL.md`, `references/gotchas.md`, and all 8 READMEs was replaced with platform-neutral phrasing; the README Install / Prerequisites sections now carry per-platform skills-directory and MCP-configuration tables, with `~/.agents/skills/` recommended as the cross-agent install location.
+  跨平台发布：skill 现定位为兼容 [Agent Skills](https://agentskills.io) 开放标准的通用能力模块，可在 Claude Code、Codex CLI、Gemini CLI、GitHub Copilot、Cursor 与 WorkBuddy 中使用。`SKILL.md`、`references/gotchas.md` 与全部 8 份 README 中的 WorkBuddy 专用表述均替换为平台中立写法；README 的安装与前置条件章节改为各平台 skills 目录与 MCP 配置对照表，并推荐 `~/.agents/skills/` 作为跨平台通用安装目录。
+- Rollback snapshot default output directory moved from the WorkBuddy-specific `~/.workbuddy/skill-backups/eagle-untagged-organizer-rollbacks/` to the skill-neutral `~/.eagle-untagged-organizer/rollbacks/` (explicit `--out-dir` unchanged; behavior otherwise identical).
+  回滚快照默认输出目录由 WorkBuddy 专属的 `~/.workbuddy/skill-backups/eagle-untagged-organizer-rollbacks/` 迁移为技能中立的 `~/.eagle-untagged-organizer/rollbacks/`（显式 `--out-dir` 参数不变；其余行为一致）。
+
+### Fixed / 修复
+- `SKILL.md` description compressed from 623 to 496 characters to satisfy Codex CLI's 500-character single-line frontmatter validation. Trigger coverage preserved: the five sample phrases were replaced by language-name triggers, and the Chinese keyword `未打标签` is kept.
+  `SKILL.md` description 由 623 字符压缩至 496 字符，以满足 Codex CLI 对 frontmatter 单行 500 字符的校验。触发覆盖保持不变：五条示例短语改为语言名触发，中文关键词 `未打标签` 保留。
+
+### Notes / 说明
+- No functional changes: the workflow, the three-dimension tag vocabularies, and all scripts are unchanged — only the snapshot script's default output path moved.
+  无功能性变化：工作流、三维受控标签词表与全部脚本逻辑不变——仅快照脚本的默认输出路径迁移。
+
 ## [2.5.2] - 2026-09-10
 
 ### Changed / 变更

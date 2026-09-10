@@ -11,7 +11,7 @@ Usage:
     python3 snapshot_eagle_batch.py --manifest dryrun_manifest.json [--out-dir <dir>]
 
 The snapshot file is named `eagle-rollback-YYYYMMDD-HHMMSS.json` and written
-to `--out-dir` (default: ~/.workbuddy/skill-backups/eagle-untagged-organizer-rollbacks/).
+to `--out-dir` (default: ~/.eagle-untagged-organizer/rollbacks/).
 Roll back later with restore_eagle_snapshot.py --snapshot <file>.
 """
 
@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from apply_eagle_batch import MCPClient, resolve_proxy
 
 DEFAULT_OUT_DIR = os.path.expanduser(
-    "~/.workbuddy/skill-backups/eagle-untagged-organizer-rollbacks"
+    "~/.eagle-untagged-organizer/rollbacks"
 )
 GET_BATCH = 500  # item_get ids limit is 1000; stay safely under it
 

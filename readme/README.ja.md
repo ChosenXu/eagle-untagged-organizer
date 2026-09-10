@@ -2,7 +2,7 @@
 
 [English](../README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | 日本語 | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
 
-[WorkBuddy](https://www.workbuddy.cn/) スキル。`eagle-mcp` コネクタ経由で [Eagle](https://eagle.cool/) 内の**未タグ付け**デザイン素材を一括整理します。UI/UX リファレンスやグラフィックデザイン作品に対し、リネーム・注釈・タグ付けを一度に実行します。
+[Agent Skills](https://agentskills.io) オープン標準に準拠したスキル。`eagle-mcp` MCP サーバー経由で [Eagle](https://eagle.cool/) 内の**未タグ付け**デザイン素材を一括整理します。UI/UX リファレンスやグラフィックデザイン作品に対し、リネーム・注釈・タグ付けを一度に実行します。Claude Code、Codex CLI、Gemini CLI、GitHub Copilot、Cursor、WorkBuddy で動作します。
 
 ## 概要
 
@@ -25,19 +25,39 @@
 
 ## インストール
 
-リポジトリを WorkBuddy のスキルディレクトリにクローン：
+本スキルは [Agent Skills](https://agentskills.io) オープン標準（`SKILL.md` + `scripts/` + `references/`）に準拠しており、互換性のある任意の AI エージェントで動作します。リポジトリを利用中のエージェントのスキルディレクトリにクローンしてください：
+
+| エージェント | ユーザーレベル | プロジェクトレベル |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
+| Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
+| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
+| WorkBuddy | `~/.workbuddy/skills/` | — |
+
+ヒント：`~/.agents/skills/` はエージェント横断の共通ディレクトリです——Codex CLI、Gemini CLI、GitHub Copilot、Cursor はネイティブに読み込み、Claude Code もフォールバックとして走査します。1 回のインストールで複数エージェントから発見されます。
 
 ```bash
 git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
-  ~/.workbuddy/skills/eagle-untagged-organizer
+  ~/.agents/skills/eagle-untagged-organizer
 ```
 
-またはフォルダを `~/.workbuddy/skills/` に手動でコピー。
+または、フォルダを上記の任意のディレクトリに手動でコピーします。
 
 ## 前提条件
 
 - Eagle デスクトップアプリが起動していること。
-- `eagle-mcp` が `~/.workbuddy/mcp.json` に設定され、コネクタパネルで信頼されていること。
+- `eagle-mcp`（Eagle 公式プラグインに同梱の MCP サーバー）を、利用中のエージェントの MCP 設定に登録します：
+
+| エージェント | MCP 設定 |
+|---|---|
+| Claude Code | `claude mcp add` またはプロジェクトの `.mcp.json` |
+| Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
+| Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
+| GitHub Copilot | `.mcp.json` （リポジトリルート） |
+| Cursor | `~/.cursor/mcp.json` |
+| WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
 
 ## 使い方
 
