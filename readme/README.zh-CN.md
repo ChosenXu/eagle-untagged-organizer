@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | 简体中文 | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
+[English](../README.md) | 简体中文 | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
 
 一个 [WorkBuddy](https://www.workbuddy.cn/) skill，通过 `eagle-mcp` 连接器批量整理 [Eagle](https://eagle.cool/) 中**未打标签**的设计素材——一次性完成 UI/UX 参考与平面设计作品的命名、标注和打标签。
 
@@ -41,7 +41,7 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 
 ## 使用方法
 
-当提到 Eagle / `eagle-mcp` / 未打标签素材并带有批量整理意图时，本 skill 会自动驱动工作流。完整工作流（预检 → 分析 → dry-run 预览 → 授权门槛 → 批量更新 → 校验）见 [`SKILL.md`](SKILL.md)。
+当提到 Eagle / `eagle-mcp` / 未打标签素材并带有批量整理意图时，本 skill 会自动驱动工作流。完整工作流（预检 → 分析 → dry-run 预览 → 授权门槛 → 批量更新 → 校验）见 [`SKILL.md`](../SKILL.md)。
 
 > 需要反过来清理混乱的标签词表（合并 / 重命名 / 退役标签）？请使用 [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance)。两个技能相互独立。
 
@@ -69,4 +69,4 @@ scripts/
 
 ## 许可证
 
-[MIT](LICENSE)
+[MIT](../LICENSE)

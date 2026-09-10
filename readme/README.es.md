@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
+[English](../README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | Español | [Deutsch](README.de.md)
 
 Una habilidad de [WorkBuddy](https://www.workbuddy.cn/) que organiza por lotes los activos de diseño **sin etiquetar** en [Eagle](https://eagle.cool/) a través del conector `eagle-mcp` — renombrando, anotando y etiquetando referencias UI/UX y obras de diseño gráfico en una sola pasada.
 
@@ -41,7 +41,7 @@ O copia la carpeta manualmente en `~/.workbuddy/skills/`.
 
 ## Uso
 
-Menciona Eagle / `eagle-mcp` / activos sin etiquetar con intención de organización por lotes, y la habilidad conduce el flujo de trabajo. Consulta [`SKILL.md`](SKILL.md) para el flujo completo (comprobaciones previas → analizar → vista previa de dry-run → puerta de autorización → actualización por lotes → verificar).
+Menciona Eagle / `eagle-mcp` / activos sin etiquetar con intención de organización por lotes, y la habilidad conduce el flujo de trabajo. Consulta [`SKILL.md`](../SKILL.md) para el flujo completo (comprobaciones previas → analizar → vista previa de dry-run → puerta de autorización → actualización por lotes → verificar).
 
 > ¿Necesitas, en cambio, limpiar un vocabulario de etiquetas desordenado (fusionar, renombrar o retirar etiquetas)? Usa [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance). Ambas skills son independientes.
 
@@ -69,4 +69,4 @@ scripts/
 
 ## Licencia
 
-[MIT](LICENSE)
+[MIT](../LICENSE)

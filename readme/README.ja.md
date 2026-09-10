@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
+[English](../README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | 日本語 | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
 
 [WorkBuddy](https://www.workbuddy.cn/) スキル。`eagle-mcp` コネクタ経由で [Eagle](https://eagle.cool/) 内の**未タグ付け**デザイン素材を一括整理します。UI/UX リファレンスやグラフィックデザイン作品に対し、リネーム・注釈・タグ付けを一度に実行します。
 
@@ -41,7 +41,7 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 
 ## 使い方
 
-Eagle / `eagle-mcp` / 未タグ付け素材に一括整理の意図を添えて言及すると、スキルがワークフローを駆動します。完全なワークフロー（事前チェック → 分析 → dry-run プレビュー → 承認ゲート → 一括更新 → 検証）は [`SKILL.md`](SKILL.md) を参照。
+Eagle / `eagle-mcp` / 未タグ付け素材に一括整理の意図を添えて言及すると、スキルがワークフローを駆動します。完全なワークフロー（事前チェック → 分析 → dry-run プレビュー → 承認ゲート → 一括更新 → 検証）は [`SKILL.md`](../SKILL.md) を参照。
 
 > 逆に、乱雑なタグ語彙を整理（タグの統合 / リネーム / 廃止）したい場合は、[`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance) をご利用ください。両スキルは独立しています。
 
@@ -69,4 +69,4 @@ scripts/
 
 ## ライセンス
 
-[MIT](LICENSE)
+[MIT](../LICENSE)

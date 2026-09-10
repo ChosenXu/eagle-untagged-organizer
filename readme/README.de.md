@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
+[English](../README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | Deutsch
 
 Ein [WorkBuddy](https://www.workbuddy.cn/)-Skill, der **nicht markierte** Design-Assets in [Eagle](https://eagle.cool/) über den `eagle-mcp`-Connector stapelweise organisiert — Umbenennen, Annotieren und Taggen von UI/UX-Referenzen und Grafikdesign-Werken in einem Durchgang.
 
@@ -41,7 +41,7 @@ Oder kopiere den Ordner manuell nach `~/.workbuddy/skills/`.
 
 ## Nutzung
 
-Erwähne Eagle / `eagle-mcp` / nicht markierte Assets mit dem Vorsatz einer Stapelorganisation, und der Skill steuert den Workflow. Siehe [`SKILL.md`](SKILL.md) für den vollständigen Workflow (Vorabprüfungen → analysieren → Dry-Run-Vorschau → Autorisierungs-Gate → Stapelupdate → verifizieren).
+Erwähne Eagle / `eagle-mcp` / nicht markierte Assets mit dem Vorsatz einer Stapelorganisation, und der Skill steuert den Workflow. Siehe [`SKILL.md`](../SKILL.md) für den vollständigen Workflow (Vorabprüfungen → analysieren → Dry-Run-Vorschau → Autorisierungs-Gate → Stapelupdate → verifizieren).
 
 > Musst du stattdessen ein chaotisches Tag-Vokabular bereinigen (Tags zusammenführen, umbenennen oder ausmustern)? Nutze [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance). Die beiden Skills sind unabhängig.
 
@@ -69,4 +69,4 @@ scripts/
 
 ## Lizenz
 
-[MIT](LICENSE)
+[MIT](../LICENSE)

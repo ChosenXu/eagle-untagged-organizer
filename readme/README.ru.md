@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
+[English](../README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | Русский | [Español](README.es.md) | [Deutsch](README.de.md)
 
 Навык [WorkBuddy](https://www.workbuddy.cn/), который пакетно упорядочивает **не размеченные тегами** дизайн-ассеты в [Eagle](https://eagle.cool/) через коннектор `eagle-mcp` — переименование, аннотирование и тегирование UI/UX-референсов и графических работ за один проход.
 
@@ -41,7 +41,7 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 
 ## Использование
 
-Упомяните Eagle / `eagle-mcp` / неразмеченные ассеты с намерением пакетной организации — навык ведёт рабочий процесс. Полный процесс (предварительные проверки → анализ → предпросмотр сухого прогона → шлюз авторизации → пакетное обновление → проверка) см. в [`SKILL.md`](SKILL.md).
+Упомяните Eagle / `eagle-mcp` / неразмеченные ассеты с намерением пакетной организации — навык ведёт рабочий процесс. Полный процесс (предварительные проверки → анализ → предпросмотр сухого прогона → шлюз авторизации → пакетное обновление → проверка) см. в [`SKILL.md`](../SKILL.md).
 
 > Нужно, наоборот, привести в порядок запутанный словарь тегов (объединить, переименовать или вывести из употребления теги)? Используйте [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance). Оба навыка независимы.
 
@@ -69,4 +69,4 @@ scripts/
 
 ## Лицензия
 
-[MIT](LICENSE)
+[MIT](../LICENSE)

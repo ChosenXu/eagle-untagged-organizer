@@ -2,7 +2,7 @@
 name: eagle-untagged-organizer
 description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp connector). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items combined with a batch-organize intent. Produces a name, a structured annotation, and tags for each asset based on visual analysis, covering both UI/UX references and graphic design works. Also triggers when the request is written in Japanese, Korean, Russian, Spanish, or German — e.g. 未タグ付けのアセットを整理して / 이글 미태그 자산 정리해줘 / разметь нетегированные ассеты в Игл / organizar activos sin etiquetar en Eagle / unmarkierte Assets in Eagle organisieren.
 agent_created: true
-version: 2.5.1
+version: 2.5.2
 ---
 
 # Eagle Untagged Organizer

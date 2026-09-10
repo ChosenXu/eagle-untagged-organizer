@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
+English | [简体中文](readme/README.zh-CN.md) | [繁体中文](readme/README.zh-Hant.md) | [日本語](readme/README.ja.md) | [한국어](readme/README.ko.md) | [Русский](readme/README.ru.md) | [Español](readme/README.es.md) | [Deutsch](readme/README.de.md)
 
 A [WorkBuddy](https://www.workbuddy.cn/) skill that batch-organizes **untagged** design assets in [Eagle](https://eagle.cool/) via the `eagle-mcp` connector — renaming, annotating, and tagging UI/UX references and graphic-design works in one pass.
 

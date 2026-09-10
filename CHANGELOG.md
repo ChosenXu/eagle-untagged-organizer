@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.5.2] - 2026-09-10
+
+### Changed / 变更
+- README restructure: all non-English READMEs moved into a new `readme/` folder at the repository root; the English `README.md` stays in the root. Relative links inside every README (language switcher, `SKILL.md`, `LICENSE`) were updated to match the new locations.
+  README 结构重组：全部非英语 README 移入仓库根目录新建的 `readme/` 文件夹，英文版 `README.md` 保留在根目录；各 README 内的相对链接（语言切换导航、`SKILL.md`、`LICENSE`）已同步修正至新位置。
+
+### Fixed / 修复
+- Language switcher: in the ja/ko/ru/es/de READMEs the current language itself is no longer hyperlinked (English, 简体中文, and 繁體中文 already behaved this way). The current language is now plain text in all 8 READMEs.
+  语言导航：日/韩/俄/西/德 5 份 README 不再给当前语言自身加超链接（英文、简体中文、繁体中文此前已是纯文本）。现在 8 份 README 中当前语言均为纯文本。
+
+### Notes / 说明
+- Documentation-only release (patch). The organizer workflow, the three-dimension tag vocabularies, and all scripts are unchanged.
+  纯文档发布（补丁级）。organizer 工作流、三维受控标签词表与全部脚本均无变化。
+
 ## [2.5.1] - 2026-09-07
 
 ### Added / 新增

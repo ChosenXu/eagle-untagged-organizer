@@ -1,6 +1,6 @@
 # Eagle Untagged Organizer
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
+[English](../README.md) | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-Hant.md) | [日本語](README.ja.md) | 한국어 | [Русский](README.ru.md) | [Español](README.es.md) | [Deutsch](README.de.md)
 
 [WorkBuddy](https://www.workbuddy.cn/) 스킬. `eagle-mcp` 커넥터를 통해 [Eagle](https://eagle.cool/)의 **태그 없는** 디자인 에셋을 일괄 정리합니다 — UI/UX 레퍼런스와 그래픽 디자인 작품의 이름 변경, 주석 추가, 태그 지정을 한 번에 수행합니다.
 
@@ -41,7 +41,7 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 
 ## 사용법
 
-Eagle / `eagle-mcp` / 태그 없는 에셋을 일괄 정리 의도와 함께 언급하면 스킬이 워크플로를 주도합니다. 전체 워크플로(사전 점검 → 분석 → dry-run 미리보기 → 승인 게이트 → 일괄 업데이트 → 검증)는 [`SKILL.md`](SKILL.md)를 참조하세요.
+Eagle / `eagle-mcp` / 태그 없는 에셋을 일괄 정리 의도와 함께 언급하면 스킬이 워크플로를 주도합니다. 전체 워크플로(사전 점검 → 분석 → dry-run 미리보기 → 승인 게이트 → 일괄 업데이트 → 검증)는 [`SKILL.md`](../SKILL.md)를 참조하세요.
 
 > 반대로 엉망인 태그 어휘를 정리(태그 병합 / 이름 변경 / 폐기)하고 싶다면 [`eagle-tag-governance`](https://github.com/ChosenXu/eagle-tag-governance)를 사용하세요. 두 스킬은 서로 독립적입니다.
 
@@ -69,4 +69,4 @@ scripts/
 
 ## 라이선스
 
-[MIT](LICENSE)
+[MIT](../LICENSE)
