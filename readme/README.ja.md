@@ -32,7 +32,7 @@
 | Claude Code | `~/.claude/skills/` | `.claude/skills/` |
 | Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
 | Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
-| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| GitHub Copilot | `~/.copilot/skills/` | `.github/skills/` |
 | Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
 | WorkBuddy | `~/.workbuddy/skills/` | — |
 
@@ -48,16 +48,33 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 ## 前提条件
 
 - Eagle デスクトップアプリが起動していること。
-- `eagle-mcp`（Eagle 公式プラグインに同梱の MCP サーバー）を、利用中のエージェントの MCP 設定に登録します：
+- `eagle-mcp`（Eagle 公式プラグインに同梱の stdio MCP サーバー）を、利用中のエージェントの MCP 設定に登録します：
+
+```json
+{
+  "mcpServers": {
+    "eagle-mcp": {
+      "command": "node",
+      "args": ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]
+    }
+  }
+}
+```
 
 | エージェント | MCP 設定 |
 |---|---|
-| Claude Code | `claude mcp add` またはプロジェクトの `.mcp.json` |
+| Claude Code | `claude mcp add`（ユーザー単位）またはプロジェクトの `.mcp.json` |
 | Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
 | Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
-| GitHub Copilot | `.mcp.json` （リポジトリルート） |
+| GitHub Copilot | `~/.copilot/mcp-config.json`（`"type": "local"`）またはリポジトリルートの `.mcp.json` |
 | Cursor | `~/.cursor/mcp.json` |
 | WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
+
+> Codex CLI は TOML 形式です：`~/.codex/config.toml` に `[mcp_servers.eagle-mcp]` を追加し、`command = "node"`、`args = ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]` を設定します。
+>
+> Gemini CLI は上記と同じ `mcpServers` JSON 構造を `~/.gemini/settings.json` に記述します（または `gemini mcp add -s user eagle-mcp node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"` を実行）。
+>
+> GitHub Copilot：同じサーバーを `"type": "local"` 付きで `~/.copilot/mcp-config.json` に追加します（または `copilot mcp add eagle-mcp -- node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"` を実行）。
 
 ## 使い方
 

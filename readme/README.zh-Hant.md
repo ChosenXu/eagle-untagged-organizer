@@ -32,7 +32,7 @@
 | Claude Code | `~/.claude/skills/` | `.claude/skills/` |
 | Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
 | Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
-| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| GitHub Copilot | `~/.copilot/skills/` | `.github/skills/` |
 | Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
 | WorkBuddy | `~/.workbuddy/skills/` | — |
 
@@ -48,16 +48,33 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 ## 前置條件
 
 - Eagle 桌面端必須正在運行。
-- `eagle-mcp`（Eagle 官方外掛內建的 MCP 伺服器）需註冊到你所用 Agent 的 MCP 設定中：
+- `eagle-mcp`（Eagle 官方外掛內建的 stdio MCP 伺服器）需註冊到你所用 Agent 的 MCP 設定中：
+
+```json
+{
+  "mcpServers": {
+    "eagle-mcp": {
+      "command": "node",
+      "args": ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]
+    }
+  }
+}
+```
 
 | 平台 | MCP 設定 |
 |---|---|
-| Claude Code | `claude mcp add` 或專案 `.mcp.json` |
+| Claude Code | `claude mcp add`（使用者層級）或專案 `.mcp.json` |
 | Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
 | Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
-| GitHub Copilot | `.mcp.json`（儲存庫根目錄） |
+| GitHub Copilot | `~/.copilot/mcp-config.json`（`"type": "local"`）或儲存庫根目錄 `.mcp.json` |
 | Cursor | `~/.cursor/mcp.json` |
 | WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
+
+> Codex CLI 使用 TOML 格式：在 `~/.codex/config.toml` 中新增 `[mcp_servers.eagle-mcp]`，設 `command = "node"`、`args = ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]`。
+>
+> Gemini CLI 使用與上方相同的 `mcpServers` JSON 結構，寫入 `~/.gemini/settings.json`（或執行 `gemini mcp add -s user eagle-mcp node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"`）。
+>
+> GitHub Copilot：將同一伺服器以 `"type": "local"` 加入 `~/.copilot/mcp-config.json`（或執行 `copilot mcp add eagle-mcp -- node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"`）。
 
 ## 使用方法
 

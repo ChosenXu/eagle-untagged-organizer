@@ -32,7 +32,7 @@ Esta habilidad sigue el estándar abierto [Agent Skills](https://agentskills.io)
 | Claude Code | `~/.claude/skills/` | `.claude/skills/` |
 | Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
 | Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
-| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| GitHub Copilot | `~/.copilot/skills/` | `.github/skills/` |
 | Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
 | WorkBuddy | `~/.workbuddy/skills/` | — |
 
@@ -48,16 +48,33 @@ O copia la carpeta manualmente en cualquiera de los directorios anteriores.
 ## Requisitos previos
 
 - La aplicación de escritorio Eagle debe estar en ejecución.
-- `eagle-mcp` (el servidor MCP incluido en el plugin oficial de Eagle) debe registrarse en la configuración MCP de tu agente:
+- `eagle-mcp` (el servidor MCP stdio incluido en el plugin oficial de Eagle) debe registrarse en la configuración MCP de tu agente:
+
+```json
+{
+  "mcpServers": {
+    "eagle-mcp": {
+      "command": "node",
+      "args": ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]
+    }
+  }
+}
+```
 
 | Agente | Configuración MCP |
 |---|---|
-| Claude Code | `claude mcp add` o `.mcp.json` del proyecto |
+| Claude Code | `claude mcp add` (ámbito de usuario) o `.mcp.json` del proyecto |
 | Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
 | Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
-| GitHub Copilot | `.mcp.json` (raíz del repositorio) |
+| GitHub Copilot | `~/.copilot/mcp-config.json` (`"type": "local"`) o `.mcp.json` en la raíz del repositorio |
 | Cursor | `~/.cursor/mcp.json` |
 | WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
+
+> Codex CLI usa TOML: añade en `~/.codex/config.toml` la sección `[mcp_servers.eagle-mcp]` con `command = "node"` y `args = ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]`.
+>
+> Gemini CLI usa la misma estructura JSON `mcpServers` en `~/.gemini/settings.json` (o ejecuta `gemini mcp add -s user eagle-mcp node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"`).
+>
+> GitHub Copilot: añade el mismo servidor en `~/.copilot/mcp-config.json` con `"type": "local"` (o ejecuta `copilot mcp add eagle-mcp -- node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"`).
 
 ## Uso
 

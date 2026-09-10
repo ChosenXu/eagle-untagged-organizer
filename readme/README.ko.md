@@ -32,7 +32,7 @@
 | Claude Code | `~/.claude/skills/` | `.claude/skills/` |
 | Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
 | Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
-| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| GitHub Copilot | `~/.copilot/skills/` | `.github/skills/` |
 | Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
 | WorkBuddy | `~/.workbuddy/skills/` | — |
 
@@ -48,16 +48,33 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 ## 사전 요구사항
 
 - Eagle 데스크톱 앱이 실행 중이어야 합니다.
-- `eagle-mcp`(Eagle 공식 플러그인에 포함된 MCP 서버)를 사용 중인 에이전트의 MCP 설정에 등록해야 합니다:
+- `eagle-mcp`(Eagle 공식 플러그인에 포함된 stdio MCP 서버)를 사용 중인 에이전트의 MCP 설정에 등록해야 합니다:
+
+```json
+{
+  "mcpServers": {
+    "eagle-mcp": {
+      "command": "node",
+      "args": ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]
+    }
+  }
+}
+```
 
 | 에이전트 | MCP 설정 |
 |---|---|
-| Claude Code | `claude mcp add` 또는 프로젝트 `.mcp.json` |
+| Claude Code | `claude mcp add`(사용자 수준) 또는 프로젝트 `.mcp.json` |
 | Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
 | Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
-| GitHub Copilot | `.mcp.json` (저장소 루트) |
+| GitHub Copilot | `~/.copilot/mcp-config.json`(`"type": "local"`) 또는 저장소 루트의 `.mcp.json` |
 | Cursor | `~/.cursor/mcp.json` |
 | WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
+
+> Codex CLI는 TOML 형식을 사용합니다: `~/.codex/config.toml`에 `[mcp_servers.eagle-mcp]`를 추가하고 `command = "node"`, `args = ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]`로 설정하세요.
+>
+> Gemini CLI는 위와 동일한 `mcpServers` JSON 구조를 `~/.gemini/settings.json`에 작성합니다(또는 `gemini mcp add -s user eagle-mcp node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"` 실행).
+>
+> GitHub Copilot: 동일한 서버를 `"type": "local"`과 함께 `~/.copilot/mcp-config.json`에 추가하세요(또는 `copilot mcp add eagle-mcp -- node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"` 실행).
 
 ## 사용법
 

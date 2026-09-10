@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.6.1] - 2026-09-10
+
+### Changed / 变更
+
+- README consistency unification across the three sibling repositories (`eagle-untagged-organizer`, `eagle-tag-governance`, `raindrop-bookmark-organizer`), applied to the English README and all seven translations: the agent name is unified as "GitHub Copilot" (was "GitHub Copilot CLI" in the install tables); the prerequisites section now follows the shared four-part structure (bullets + `mcpServers` JSON example + MCP configuration table + per-platform notes); the GitHub Copilot MCP row lists both `~/.copilot/mcp-config.json` (user-level, `"type": "local"`) and repo-root `.mcp.json`; the `eagle-mcp` bullet wording is unified ("the stdio MCP server bundled with Eagle's official plugin").
+  三仓库（`eagle-untagged-organizer`、`eagle-tag-governance`、`raindrop-bookmark-organizer`）README 一致性统一，覆盖英文版与全部七个翻译版：平台名统一为 "GitHub Copilot"（安装表原为 "GitHub Copilot CLI"）；前置条件改为四件套共用结构（bullet + `mcpServers` JSON 示例 + MCP 配置表 + 分平台注释）；GitHub Copilot 的 MCP 行同时列出 `~/.copilot/mcp-config.json`（用户级，`"type": "local"`）与仓库根 `.mcp.json`；`eagle-mcp` 描述统一为「Eagle 官方插件内置的 stdio MCP 服务器」。
+
+### Notes / 说明
+
+- Version bumped 2.6.0 → 2.6.1 (PATCH: documentation only); no workflow or write-behavior changes.
+  版本 2.6.0 → 2.6.1（PATCH：纯文档）；工作流与写入行为无任何变化。
+
 ## [2.6.0] - 2026-09-10
 
 ### Changed / 变更

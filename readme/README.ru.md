@@ -32,7 +32,7 @@
 | Claude Code | `~/.claude/skills/` | `.claude/skills/` |
 | Codex CLI | `~/.agents/skills/` | `.agents/skills/` |
 | Gemini CLI | `~/.gemini/skills/` | `.gemini/skills/` |
-| GitHub Copilot CLI | `~/.copilot/skills/` | `.github/skills/` |
+| GitHub Copilot | `~/.copilot/skills/` | `.github/skills/` |
 | Cursor | `~/.cursor/skills/` | `.cursor/skills/` |
 | WorkBuddy | `~/.workbuddy/skills/` | — |
 
@@ -48,16 +48,33 @@ git clone https://github.com/ChosenXu/eagle-untagged-organizer.git \
 ## Требования
 
 - Приложение Eagle должно быть запущено.
-- `eagle-mcp` (MCP-сервер, встроенный в официальный плагин Eagle) должен быть зарегистрирован в конфигурации MCP вашего агента:
+- `eagle-mcp` (stdio MCP-сервер, встроенный в официальный плагин Eagle) должен быть зарегистрирован в конфигурации MCP вашего агента:
+
+```json
+{
+  "mcpServers": {
+    "eagle-mcp": {
+      "command": "node",
+      "args": ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]
+    }
+  }
+}
+```
 
 | Агент | Конфигурация MCP |
 |---|---|
-| Claude Code | `claude mcp add` или `.mcp.json` проекта |
+| Claude Code | `claude mcp add` (на уровне пользователя) или `.mcp.json` проекта |
 | Codex CLI | `~/.codex/config.toml` → `[mcp_servers.eagle-mcp]` |
 | Gemini CLI | `~/.gemini/settings.json` → `mcpServers` |
-| GitHub Copilot | `.mcp.json` (корень репозитория) |
+| GitHub Copilot | `~/.copilot/mcp-config.json` (`"type": "local"`) или `.mcp.json` в корне репозитория |
 | Cursor | `~/.cursor/mcp.json` |
 | WorkBuddy | `~/.workbuddy/mcp.json` → `mcpServers` |
+
+> Codex CLI использует TOML: добавьте в `~/.codex/config.toml` секцию `[mcp_servers.eagle-mcp]` с `command = "node"` и `args = ["<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"]`.
+>
+> Gemini CLI использует ту же JSON-структуру `mcpServers` в `~/.gemini/settings.json` (или выполните `gemini mcp add -s user eagle-mcp node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"`).
+>
+> GitHub Copilot: добавьте тот же сервер в `~/.copilot/mcp-config.json` с `"type": "local"` (или выполните `copilot mcp add eagle-mcp -- node "<home>/Library/Application Support/Eagle/Plugins/mcp-server/modules/mcp-proxy.js"`).
 
 ## Использование
 
