@@ -60,13 +60,19 @@ def main():
     out_path = os.path.join(args.out_dir, f"eagle-rollback-{ts}.json")
 
     client = MCPClient(resolve_proxy(args.proxy))
-    client.initialize()
+    if client.initialize() is None:
+        client.close()
+        sys.exit("error: MCP initialize failed (is Eagle running?)")
 
     # Fetch current state in safe batches (read-only).
     fetched = {}
     for i in range(0, len(ids), GET_BATCH):
         chunk = ids[i:i + GET_BATCH]
         res = client.call_tool("item_get", {"ids": chunk, "fullDetails": True})
+        if res is None:
+            print(f"WARNING: item_get timed out for chunk {i//GET_BATCH + 1}; "
+                  f"{len(chunk)} ids will be missing from the snapshot")
+            continue
         content = res.get("result", {}).get("content", [])
         text = content[0].get("text", "") if content else ""
         if res.get("result", {}).get("isError"):

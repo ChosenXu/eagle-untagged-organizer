@@ -58,6 +58,11 @@ class MCPClient:
         self.lock = threading.Lock()
         self.t = threading.Thread(target=self._reader, daemon=True)
         self.t.start()
+        # Drain stderr in the background. Without this, a chatty node process
+        # can fill the OS pipe buffer (~64KB) and block on stderr writes,
+        # which stalls stdout and makes every call time out.
+        self.t_err = threading.Thread(target=self._stderr_reader, daemon=True)
+        self.t_err.start()
         self._id = 0
 
     def _reader(self):
@@ -70,6 +75,16 @@ class MCPClient:
             except Exception:
                 continue
             self.q.put(msg)
+
+    def _stderr_reader(self):
+        try:
+            for line in self.p.stderr:
+                sys.stderr.write("[mcp-proxy] " + line)
+                if not line.endswith("\n"):
+                    sys.stderr.write("\n")
+                sys.stderr.flush()
+        except Exception:
+            pass
 
     def _send(self, obj):
         with self.lock:

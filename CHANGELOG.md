@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.6.2] - 2026-09-21
+
+### Fixed / 修复
+
+- Deadlock guard: `MCPClient` now drains the node proxy's stderr in a background thread and forwards it (prefixed `[mcp-proxy] `) to the local stderr. Previously stderr was captured but never read, so a chatty proxy — it logs every JSON-RPC exchange — could fill the OS pipe buffer (~64KB), block the node process on stderr writes, and stall every MCP call until timeout.
+  死锁防护：`MCPClient` 现在由后台线程持续读取 node 代理的 stderr，并加 `[mcp-proxy] ` 前缀转发到本地 stderr。此前 stderr 被捕获但从不读取，话多的代理（它会对每次 JSON-RPC 交互打日志）可能写满系统管道缓冲区（约 64KB），使 node 进程阻塞在 stderr 写入上，所有 MCP 调用停滞直至超时。
+- `snapshot_eagle_batch.py` no longer crashes when an `item_get` chunk times out: a `None` response now prints a WARNING naming the affected ids instead of raising `AttributeError` and discarding all already-fetched data — the rollback safety net survives exactly when Eagle is unstable.
+  `snapshot_eagle_batch.py` 在 `item_get` 分块超时不再崩溃：响应为 `None` 时打印 WARNING 并指明受影响的 id，而不是抛出 `AttributeError` 丢掉全部已取回的数据——回滚安全网恰在 Eagle 不稳定时得以保全。
+- `snapshot_eagle_batch.py` and `restore_eagle_snapshot.py` now check the MCP `initialize` result and exit immediately with a clear error when Eagle is not running (previously the snapshot script crashed after per-chunk timeouts, and the restore script idled one full timeout per batch).
+  `snapshot_eagle_batch.py` 与 `restore_eagle_snapshot.py` 现在会检查 MCP `initialize` 的结果，Eagle 未运行时立即报错退出（此前快照脚本在逐块超时后崩溃，恢复脚本每批空等一个完整超时周期）。
+
+### Notes / 说明
+
+- Bug-fix-only release (PATCH); no workflow or payload-format changes. All three fixes live in the bundled scripts' error paths — happy-path behavior is unchanged.
+  纯缺陷修复发布（PATCH）；工作流与载荷格式无变化。三项修复全部位于内置脚本的错误处理路径——正常路径行为不变。
+
 ## [2.6.1] - 2026-09-10
 
 ### Changed / 变更

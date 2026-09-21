@@ -53,7 +53,9 @@ def main():
         sys.exit("rollback cancelled — no changes made")
 
     client = MCPClient(resolve_proxy(args.proxy))
-    client.initialize()
+    if client.initialize() is None:
+        client.close()
+        sys.exit("error: MCP initialize failed (is Eagle running?)")
 
     payload = [{
         "id": it.get("id"),
