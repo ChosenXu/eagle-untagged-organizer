@@ -25,9 +25,11 @@ Notes:
     - Requires the Eagle desktop app to be running and `node` on PATH.
     - The proxy path is auto-detected; override with --proxy if needed.
     - Batch size default 20 (safe); the result text is printed for review,
-      and success is judged per-batch by the tool's isError flag, NOT by
-      string-matching. Always re-read items afterwards to confirm the
-      returned count equals the requested count.
+      and success is judged per-item when Eagle returns per-item results
+      (batch-level isError=false can still hide per-item failures), falling
+      back to the batch size when no per-item data is available. Always
+      re-read items afterwards to confirm the returned count equals the
+      requested count.
 """
 
 import argparse
@@ -92,8 +94,8 @@ class MCPClient:
             self.p.stdin.flush()
 
     def _wait(self, msg_id, timeout=60):
-        end = time.time() + timeout
-        while time.time() < end:
+        end = time.monotonic() + timeout
+        while time.monotonic() < end:
             try:
                 m = self.q.get(timeout=2)
             except queue.Empty:
@@ -126,15 +128,26 @@ class MCPClient:
         return self._wait(rid, timeout)
 
     def close(self):
-        for attr in ("stdin",):
-            try:
-                getattr(self.p, attr).close()
-            except Exception:
-                pass
+        # Close stdin first (EOF to the child), then stop the process and reap
+        # it (no zombie), then close the remaining pipes. Closing stdout/stderr
+        # last lets the reader threads drain until the process is gone.
+        try:
+            self.p.stdin.close()
+        except Exception:
+            pass
         try:
             self.p.terminate()
         except Exception:
             pass
+        try:
+            self.p.wait(timeout=5)
+        except Exception:
+            pass
+        for attr in ("stdout", "stderr"):
+            try:
+                getattr(self.p, attr).close()
+            except Exception:
+                pass
 
 
 def resolve_proxy(explicit=None):
@@ -185,6 +198,30 @@ def clean_items(items):
     return cleaned
 
 
+def count_item_successes(text, fallback):
+    """Count per-item successes in an item_update response.
+
+    Eagle can return batch-level isError=false while individual items fail
+    (e.g. "Item not found"), so the batch flag alone overstates success.
+    The response text is JSON shaped like
+    {"success": true, "data": [{"id": ..., "success": false, ...}, ...]}.
+    Returns the number of data entries whose success is not false; falls
+    back to `fallback` when no per-item data is available.
+    """
+    try:
+        d = json.loads(text)
+    except Exception:
+        return fallback
+    if not isinstance(d, dict):
+        return fallback
+    data = d.get("data")
+    if isinstance(data, list) and data and all(isinstance(x, dict) for x in data):
+        return sum(1 for it in data if it.get("success", True) is not False)
+    if d.get("success") is False:
+        return 0
+    return fallback
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--tool", default="item_update", help="MCP tool name to call")
@@ -193,10 +230,16 @@ def main():
     ap.add_argument("--proxy", default=None, help="path to mcp-proxy.js (auto-detected)")
     args = ap.parse_args()
 
-    if not os.path.isfile(args.payload):
+    if args.batch < 1:
+        sys.exit("error: --batch must be >= 1")
+
+    try:
+        with open(args.payload) as f:
+            args_dict = json.load(f)
+    except FileNotFoundError:
         sys.exit(f"error: payload file not found: {args.payload}")
-    with open(args.payload) as f:
-        args_dict = json.load(f)
+    except json.JSONDecodeError as e:
+        sys.exit(f"error: payload is not valid JSON: {e}")
 
     # The bulk item_update payload is {"items": [...]}; chunk that array.
     items = args_dict.get("items")
@@ -223,14 +266,20 @@ def main():
     for bi, batch in enumerate(batches, 1):
         res = client.call_tool(args.tool, {"items": batch})
         if res is None:
-            print(f"batch {bi}/{len(batches)}: TIMEOUT (re-run needed for these {len(batch)} items)")
+            print(f"batch {bi}/{len(batches)}: TIMEOUT (safe to re-run these "
+                  f"{len(batch)} items — item_update writes absolute values, so "
+                  f"applying the same payload twice changes nothing)")
             continue
         is_err = res.get("result", {}).get("isError", False)
         content = res.get("result", {}).get("content", [])
         text = content[0].get("text", "") if content else ""
         print(f"batch {bi}/{len(batches)}: isError={is_err} | {text[:200]}")
         if not is_err:
-            total_confirmed += len(batch)
+            n = count_item_successes(text, len(batch))
+            total_confirmed += n
+            if n != len(batch):
+                print(f"  batch {bi}: only {n}/{len(batch)} items succeeded "
+                      f"(see per-item errors above)")
 
     print(f"requested={total_requested} confirmed_ok={total_confirmed}")
     if total_confirmed != total_requested:

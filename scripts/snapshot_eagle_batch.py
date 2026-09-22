@@ -55,7 +55,8 @@ def main():
     if not ids:
         sys.exit("error: no item ids found in manifest")
 
-    os.makedirs(args.out_dir, exist_ok=True)
+    # mode applies to the leaf directory (owner-only); intermediates keep defaults.
+    os.makedirs(args.out_dir, mode=0o700, exist_ok=True)
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")
     out_path = os.path.join(args.out_dir, f"eagle-rollback-{ts}.json")
 

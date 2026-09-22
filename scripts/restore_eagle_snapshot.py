@@ -21,7 +21,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from apply_eagle_batch import MCPClient, resolve_proxy
+from apply_eagle_batch import MCPClient, resolve_proxy, count_item_successes
 
 
 def main():
@@ -34,6 +34,9 @@ def main():
                     help="skip the interactive confirmation (non-interactive/agent runs)")
     ap.add_argument("--proxy", default=None, help="path to mcp-proxy.js (auto-detected)")
     args = ap.parse_args()
+
+    if args.batch < 1:
+        sys.exit("error: --batch must be >= 1")
 
     try:
         with open(args.snapshot) as f:
@@ -88,13 +91,19 @@ def main():
     for bi, batch in enumerate(batches, 1):
         res = client.call_tool("item_update", {"items": batch})
         if res is None:
-            print(f"batch {bi}/{len(batches)}: TIMEOUT (re-run restore for these {len(batch)} items)")
+            print(f"batch {bi}/{len(batches)}: TIMEOUT (safe to re-run restore for "
+                  f"these {len(batch)} items — item_update writes absolute values, "
+                  f"so re-applying the same snapshot changes nothing)")
             continue
         is_err = res.get("result", {}).get("isError", False)
         text = res.get("result", {}).get("content", [{}])[0].get("text", "")
         print(f"batch {bi}/{len(batches)}: isError={is_err} | {text[:120]}")
         if not is_err:
-            total_confirmed += len(batch)
+            n = count_item_successes(text, len(batch))
+            total_confirmed += n
+            if n != len(batch):
+                print(f"  batch {bi}: only {n}/{len(batch)} items restored "
+                      f"(see per-item errors above)")
 
     print(f"restored={total_confirmed}/{len(payload)}")
     if total_confirmed != len(payload):

@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.7.1] - 2026-09-22
+
+### Fixed / 修复
+
+- **Accurate per-item counting** — batch success is now judged per-item when Eagle returns per-item results: a batch with `isError=false` but per-item failures (e.g. unknown ids) previously reported `confirmed_ok` / `restored` as if every item succeeded. The scripts now parse the per-item `success` fields and warn per batch when only some items made it (verified end-to-end: a fake-id restore now correctly reports `restored=0/2` instead of `restored=2/2`).
+  **逐条精确计数** —— 批次成功与否现在在 Eagle 返回逐条结果时按条判断：批级 `isError=false` 但条目级失败（如 id 不存在）的批次，此前会按全部成功计入 `confirmed_ok` / `restored`。脚本现在解析逐条 `success` 字段，并在批次内只有部分成功时逐批警告（已端到端验证：假 id 回滚现在正确报告 `restored=0/2`，不再是 `restored=2/2`）。
+- `apply_eagle_batch.py` now reports invalid JSON payloads with a friendly one-line error instead of a traceback, and rejects `--batch < 1` (previously `--batch 0` crashed with `ValueError`, negative values silently did nothing) — same validation added to `restore_eagle_snapshot.py`'s `--batch`.
+  `apply_eagle_batch.py` 对无效 JSON 载荷改为友好的一行报错（不再输出异常堆栈），并拒绝 `--batch < 1`（此前 `--batch 0` 抛 `ValueError` 崩溃、负值静默空跑）——`restore_eagle_snapshot.py` 的 `--batch` 同步加了校验。
+- TIMEOUT messages in `apply_eagle_batch.py` and `restore_eagle_snapshot.py` now state that re-running is safe (`item_update` writes absolute values, so applying the same payload twice changes nothing).
+  `apply_eagle_batch.py` 与 `restore_eagle_snapshot.py` 的 TIMEOUT 提示现在明确说明重跑是安全的（`item_update` 写入绝对值，同一载荷执行两次结果不变）。
+- `MCPClient.close()` now reaps the node child process (`wait`) and closes all three pipes, preventing zombie processes and file-descriptor leaks.
+  `MCPClient.close()` 现在会回收 node 子进程（`wait`）并关闭全部三个管道，避免僵尸进程与文件描述符泄漏。
+- Timeout accounting in `MCPClient._wait` switched from wall-clock `time.time()` to `time.monotonic()`, so NTP clock adjustments can no longer break timeout math.
+  `MCPClient._wait` 的超时计时由墙上时钟 `time.time()` 改为 `time.monotonic()`，NTP 校时不再影响超时计算。
+- `snapshot_eagle_batch.py` creates the rollback directory owner-only (`0o700`).
+  `snapshot_eagle_batch.py` 创建回滚目录时改为仅所有者可访问（`0o700`）。
+
+### Notes / 说明
+
+- Robustness/accuracy PATCH; no workflow, payload-format, or CLI-surface changes (no new options).
+  健壮性/准确性补丁；工作流、载荷格式与命令行接口无变化（无新增参数）。
+
 ## [2.7.0] - 2026-09-21
 
 ### Added / 新增
