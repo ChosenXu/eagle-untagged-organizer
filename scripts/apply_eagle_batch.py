@@ -152,9 +152,11 @@ def resolve_proxy(explicit=None):
 
 
 def clean_items(items):
-    """Strip review-only fields and apply the name-disposition decision.
+    """Validate entries, strip review-only fields, apply the name decision.
 
     Returns a new list where each item is payload-ready for `item_update`:
+    - Entries that are not objects or lack an `id` are dropped with a warning
+      (they would fail Eagle's schema validation and poison the whole batch).
     - `oldName` / `nameAction` / `proposedName` are removed (schema forbids them).
     - `name` is sent only when `nameAction == "rename"`; otherwise it is omitted
       so Eagle keeps the existing name.
@@ -162,7 +164,10 @@ def clean_items(items):
     cleaned = []
     for it in items:
         if not isinstance(it, dict):
-            cleaned.append(it)
+            print(f"warning: skipping malformed entry (not an object): {it!r}")
+            continue
+        if not it.get("id"):
+            print(f"warning: skipping entry without id: {it!r}")
             continue
         entry = {k: v for k, v in it.items()
                  if k not in ("oldName", "nameAction", "proposedName")}

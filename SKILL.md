@@ -2,7 +2,7 @@
 name: eagle-untagged-organizer
 description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp MCP server). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items with a batch-organize intent; also triggers when the request is written in Japanese, Korean, Russian, Spanish, or German. Produces a name, a structured five-field annotation, and tags from a controlled three-dimension vocabulary for each asset, based on visual analysis of UI/UX references and graphic design works.
 agent_created: true
-version: 2.6.2
+version: 2.7.0
 ---
 
 # Eagle Untagged Organizer
@@ -252,7 +252,7 @@ Before the Phase 4 write, capture the current state of every asset still in the 
 - Run `scripts/snapshot_eagle_batch.py --manifest dryrun_manifest.json`. It reads the id list from the manifest, fetches each item's current `name` / `tags` / `annotation` through `item_get` (fullDetails), and writes a timestamped JSON snapshot to `~/.eagle-untagged-organizer/rollbacks/eagle-rollback-YYYYMMDD-HHMMSS.json`.
 - This step is **read-only** and never writes to Eagle. If it fails (disk/permission), it only warns — the batch still proceeds.
 - The snapshot covers exactly this batch's assets (not the whole library) and is the rollback point for this run.
-- If a later batch goes wrong, restore with `scripts/restore_eagle_snapshot.py --snapshot <file>` — it prints a summary and asks you to type `yes` before overwriting anything.
+- If a later batch goes wrong, restore with `scripts/restore_eagle_snapshot.py --snapshot <file>` — it prints a summary and asks you to type `yes` before overwriting anything (pass `--yes` to skip the prompt when driving the script non-interactively).
 
 ### Phase 4 — Batch update
 

@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.7.0] - 2026-09-21
+
+### Added / 新增
+
+- `restore_eagle_snapshot.py --yes` flag to skip the interactive confirmation for non-interactive / agent-driven runs; without the flag the behavior is unchanged (type `yes` to proceed).
+  `restore_eagle_snapshot.py --yes` 参数，供非交互/代理驱动的运行跳过交互确认；不带该参数时行为不变（仍需输入 `yes` 确认）。
+
+### Changed / 变更
+
+- `restore_eagle_snapshot.py` now omits fields missing from a snapshot entry instead of defaulting them to `""` / `[]` — hand-edited or partial snapshots no longer blank names or wipe tags; Eagle preserves the current value for omitted fields.
+  `restore_eagle_snapshot.py` 对快照条目中缺失的字段改为整体省略，不再默认补 `""` / `[]`——手工编辑或不完整的快照不会再清空名称、抹掉标签；省略的字段由 Eagle 保留当前值。
+- `apply_eagle_batch.py` `clean_items()` now drops entries that are not objects or lack an `id` (printing a warning) instead of passing them through, so a single malformed line can no longer fail the whole batch's schema validation.
+  `apply_eagle_batch.py` 的 `clean_items()` 现在会丢弃非对象或缺少 `id` 的条目（并打印警告），不再原样透传——单条脏数据不会再让整批的 schema 校验失败。
+- `restore_eagle_snapshot.py` handles a closed stdin (EOFError) by cancelling with a clear message pointing to `--yes`, instead of crashing with a traceback.
+  `restore_eagle_snapshot.py` 在 stdin 关闭时（EOFError）会带明确提示优雅取消并指向 `--yes`，不再抛出报错堆栈崩溃。
+
+### Notes / 说明
+
+- Restores from snapshots produced by `snapshot_eagle_batch.py` (which always writes all three fields) behave identically; the field-omission logic only affects hand-edited or partial snapshots.
+  对 `snapshot_eagle_batch.py` 产出的快照（三个字段恒全写入）行为完全一致；字段省略逻辑只影响手工编辑或不完整的快照。
+
 ## [2.6.2] - 2026-09-21
 
 ### Fixed / 修复

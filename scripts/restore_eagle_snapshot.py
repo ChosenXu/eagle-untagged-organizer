@@ -9,7 +9,10 @@ For safety it prints a summary and asks for explicit confirmation (type "yes")
 before writing anything. See SKILL.md Phase 3, Step 3-pre.
 
 Usage:
-    python3 restore_eagle_snapshot.py --snapshot eagle-rollback-YYYYMMDD-HHMMSS.json [--batch 20]
+    python3 restore_eagle_snapshot.py --snapshot eagle-rollback-YYYYMMDD-HHMMSS.json [--batch 20] [--yes]
+
+`--yes` skips the interactive confirmation (for non-interactive / agent-driven
+runs); without it the script asks you to type "yes" before writing anything.
 """
 
 import argparse
@@ -27,6 +30,8 @@ def main():
                     help="snapshot JSON from snapshot_eagle_batch.py")
     ap.add_argument("--batch", type=int, default=20,
                     help="items per item_update call (default 20)")
+    ap.add_argument("--yes", action="store_true",
+                    help="skip the interactive confirmation (non-interactive/agent runs)")
     ap.add_argument("--proxy", default=None, help="path to mcp-proxy.js (auto-detected)")
     args = ap.parse_args()
 
@@ -48,21 +53,35 @@ def main():
     if len(items) > 10:
         print(f"  ... and {len(items) - 10} more")
 
-    ans = input("Type 'yes' to confirm rollback: ").strip().lower()
-    if ans != "yes":
-        sys.exit("rollback cancelled — no changes made")
+    if args.yes:
+        print("--yes given: skipping interactive confirmation")
+    else:
+        try:
+            ans = input("Type 'yes' to confirm rollback: ").strip().lower()
+        except EOFError:
+            sys.exit("rollback cancelled — no interactive confirmation possible "
+                     "(stdin is closed). Re-run with --yes to proceed.")
+        if ans != "yes":
+            sys.exit("rollback cancelled — no changes made")
 
     client = MCPClient(resolve_proxy(args.proxy))
     if client.initialize() is None:
         client.close()
         sys.exit("error: MCP initialize failed (is Eagle running?)")
 
-    payload = [{
-        "id": it.get("id"),
-        "name": it.get("name", ""),
-        "tags": it.get("tags", []),
-        "annotation": it.get("annotation", ""),
-    } for it in items if it.get("id")]
+    # Send a field only when the snapshot entry actually has it — omitting a
+    # field makes Eagle preserve the current value, whereas defaulting to
+    # ""/[] would blank the name or wipe tags on hand-edited snapshots.
+    payload = []
+    for it in items:
+        if not it.get("id"):
+            print(f"warning: skipping snapshot entry without id: {it!r}")
+            continue
+        entry = {"id": it["id"]}
+        for field in ("name", "tags", "annotation"):
+            if field in it:
+                entry[field] = it[field]
+        payload.append(entry)
 
     batches = [payload[i:i + args.batch] for i in range(0, len(payload), args.batch)]
     total_confirmed = 0
