@@ -1,0 +1,56 @@
+# Shared CI workflow for Skills/* repos.
+# Copy to <repo>/.github/workflows/ci.yml. Deliberately conservative:
+# syntax errors + unresolved names + the repo's own tests. Style rules are
+# added per-repo only if the repo opts in, so the first run goes green.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install linter
+        run: pip install ruff==0.6.9
+
+      - name: Syntax compile (all .py, no pycache)
+        run: |
+          set -e
+          find . -name '*.py' -not -path './.git/*' -print0 \
+            | xargs -0 -n1 python3 -c "import sys; compile(open(sys.argv[1], encoding='utf-8').read(), sys.argv[1], 'exec')"
+
+      - name: Lint (error-level only)
+        run: ruff check --select E9,F63,F7,F82 .
+
+      - name: Tests
+        run: |
+          set -e
+          if [ -d tests ]; then
+            python3 -m unittest discover -s tests -v
+          else
+            echo "no tests/ directory — skipped"
+          fi
+
+      - name: Script selftests
+        run: |
+          set -e
+          found=0
+          for f in scripts/*.py; do
+            [ -e "$f" ] || continue
+            if grep -q -- '--selftest' "$f"; then
+              found=1
+              python3 "$f" --selftest
+            fi
+          done
+          [ "$found" -eq 1 ] || echo "no --selftest scripts — skipped"
