@@ -102,7 +102,20 @@ scripts/
   build_dryrun.py            # build a reviewable dry-run manifest
   snapshot_eagle_batch.py    # read-only: export a timestamped pre-write snapshot (id+name+tags+annotation)
   restore_eagle_snapshot.py  # restore assets from a snapshot via item_update (asks "yes" before writing)
+tests/
+  test_apply_eagle_batch.py  # offline selftests: payload hygiene & per-item counting
+  test_mcp_client.py         # offline selftests: MCPClient queue/timeouts/stderr/close
 ```
+
+## Development
+
+Tests are stdlib-only and fully offline (fake `Popen`, no Eagle, no node):
+
+```
+python3 -m unittest discover -s tests -v
+```
+
+CI runs the same suite plus a syntax compile and error-level ruff on every push (`.github/workflows/ci.yml`). Leave no `__pycache__/` behind after running tests locally.
 
 ## License
 

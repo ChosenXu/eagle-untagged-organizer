@@ -2,7 +2,7 @@
 name: eagle-untagged-organizer
 description: Use when the user wants to rename, tag, or annotate untagged design assets in Eagle (via the eagle-mcp MCP server). Triggers on mentions of Eagle, eagle-mcp, or untagged/未打标签 items with a batch-organize intent; also triggers when the request is written in Japanese, Korean, Russian, Spanish, or German. Produces a name, a structured five-field annotation, and tags from a controlled three-dimension vocabulary for each asset, based on visual analysis of UI/UX references and graphic design works.
 agent_created: true
-version: 2.7.1
+version: 2.7.2
 ---
 
 # Eagle Untagged Organizer
@@ -71,7 +71,7 @@ Load these `references/` files only when needed, not all at once:
 | `references/templates.md` | Before producing names/annotations — the naming formula and the five-field annotation template (also inlined in Phase 2) |
 | `references/gotchas.md` | Before the first `item_update` of a session, and whenever a call behaves unexpectedly |
 
-`scripts/apply_eagle_batch.py` is a bundled Python MCP-stdio client for bulk (100+) writes; use it instead of pasting large payloads into the chat. `scripts/build_dryrun.py` turns the analysis output into a reviewable manifest (Phase 3a). See `references/gotchas.md` for usage.
+`scripts/apply_eagle_batch.py` is a bundled Python MCP-stdio client for bulk (100+) writes; use it instead of pasting large payloads into the chat. `scripts/build_dryrun.py` turns the analysis output into a reviewable manifest (Phase 3a). The scripts carry offline selftests (`tests/`, stdlib-only — run `python3 -m unittest discover -s tests` after changing them; CI enforces this on every push). See `references/gotchas.md` for usage.
 
 ## Workflow
 

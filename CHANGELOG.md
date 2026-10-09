@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.7.2] - 2026-10-09
+
+### Added / 新增
+
+- Offline test coverage for `MCPClient` (`tests/test_mcp_client.py`, 5 cases, fake `Popen` — no node, no Eagle): initialize roundtrip, `_wait` mismatched-id discarding, timeout/no-response paths, stderr drain with `[mcp-proxy] ` forwarding (the v2.6.2 deadlock guard), and `close()` reaping all pipes. Suite is now 14 offline tests; run `python3 -m unittest discover -s tests -v`.
+  为 `MCPClient` 补齐离线测试（`tests/test_mcp_client.py`，5 项，假 `Popen`，不依赖 node 与 Eagle）：initialize 往返、`_wait` 丢弃不匹配 id、超时/无响应路径、stderr 排空与 `[mcp-proxy] ` 转发（v2.6.2 的死锁防护）、`close()` 回收全部管道。测试套件现共 14 项离线用例，运行 `python3 -m unittest discover -s tests -v`。
+
+### Changed / 变更
+
+- Documentation now reflects the test/CI reality: README gains a `tests/` section in the structure tree and a Development section; `SKILL.md` and `references/gotchas.md` point to the offline selftests and the no-`__pycache__` rule.
+  文档同步测试与 CI 现状：README 结构树加入 `tests/` 并新增 Development 小节；`SKILL.md` 与 `references/gotchas.md` 指向离线自测与「不留 `__pycache__`」约定。
+
+### Notes / 说明
+
+- Tests-only + documentation release (PATCH); no script behavior changes. The MCPClient tests encode the v2.6.2 P-1/P-3 fixes so future regressions surface as red tests instead of production hangs.
+  纯测试与文档发布（PATCH）；脚本行为无变化。MCPClient 测试将 v2.6.2 的 P-1/P-3 修复固化为断言，未来回归以红测试呈现，而非生产环境挂起。
+
 ## [2.7.1] - 2026-09-22
 
 ### Fixed / 修复
