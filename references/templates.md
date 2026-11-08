@@ -33,7 +33,7 @@ For the other five languages (日本語 / 한국어 / Русский / Español 
 **Formatting rules (hard):**
 
 - Each field goes on its **own line**, separated by a newline. **Never** join multiple fields into one paragraph or one continuous line.
-- Use the exact field label followed by `：` (full-width colon), then the value.
+- Use the exact field label followed by `：` (full-width colon) for CJK output, or `: ` (half-width colon) for non-CJK output (English / Русский / Español / Deutsch), then the value.
 - No blank lines between fields; no bullet markers; no extra labels.
 
 **Template (copy this structure verbatim, using the target language's labels):**

@@ -49,6 +49,24 @@ DEFAULT_PROXY_CANDIDATES = [
 ]
 
 
+def _skill_version():
+    """Return the skill version from SKILL.md frontmatter (single source of truth).
+
+    Keeping the JSON-RPC clientInfo version in sync with the repo version stops
+    a hardcoded literal from silently drifting on each release.
+    """
+    try:
+        here = os.path.dirname(os.path.abspath(__file__))
+        skill_md = os.path.join(here, os.pardir, "SKILL.md")
+        with open(skill_md, encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("version:"):
+                    return line.split(":", 1)[1].strip()
+    except Exception:
+        pass
+    return "unknown"
+
+
 class MCPClient:
     def __init__(self, proxy):
         self.p = subprocess.Popen(
@@ -111,7 +129,7 @@ class MCPClient:
             "jsonrpc": "2.0", "id": rid, "method": "initialize",
             "params": {
                 "protocolVersion": "2024-11-05", "capabilities": {},
-                "clientInfo": {"name": "eagle-untagged-organizer", "version": "1.0"},
+                "clientInfo": {"name": "eagle-untagged-organizer", "version": _skill_version()},
             },
         })
         init = self._wait(rid, 30)
@@ -142,7 +160,11 @@ class MCPClient:
         try:
             self.p.wait(timeout=5)
         except Exception:
-            pass
+            try:
+                self.p.kill()
+                self.p.wait(timeout=5)
+            except Exception:
+                pass
         for attr in ("stdout", "stderr"):
             try:
                 getattr(self.p, attr).close()
@@ -215,8 +237,11 @@ def count_item_successes(text, fallback):
     if not isinstance(d, dict):
         return fallback
     data = d.get("data")
-    if isinstance(data, list) and data and all(isinstance(x, dict) for x in data):
-        return sum(1 for it in data if it.get("success", True) is not False)
+    if isinstance(data, list):
+        # Empty list = zero per-item confirmations. Do NOT fall back to the
+        # batch size here, or a failed/partial batch is reported as all-OK.
+        return sum(1 for it in data
+                   if isinstance(it, dict) and it.get("success", True) is not False)
     if d.get("success") is False:
         return 0
     return fallback
@@ -247,45 +272,48 @@ def main():
         sys.exit('error: payload must contain an "items" array')
 
     client = MCPClient(resolve_proxy(args.proxy))
-    init = client.initialize()
-    ok = init is not None
-    info = (init or {}).get("result", {}).get("serverInfo")
-    print("initialize:", "OK" if ok else "FAIL", info or "")
-    if not ok:
-        sys.exit("error: MCP initialize failed (is Eagle running?)")
+    try:
+        init = client.initialize()
+        ok = init is not None
+        info = (init or {}).get("result", {}).get("serverInfo")
+        print("initialize:", "OK" if ok else "FAIL", info or "")
+        if not ok:
+            sys.exit("error: MCP initialize failed (is Eagle running?)")
 
-    # Strip review-only fields and honor the name-disposition decision.
-    # `clean_items` drops `oldName`/`nameAction`/`proposedName` (schema forbids
-    # them) and sends `name` only when `nameAction == "rename"`; otherwise it
-    # omits `name` so Eagle keeps the existing name (verified empirically).
-    cleaned = clean_items(items)
+        # Strip review-only fields and honor the name-disposition decision.
+        # `clean_items` drops `oldName`/`nameAction`/`proposedName` (schema forbids
+        # them) and sends `name` only when `nameAction == "rename"`; otherwise it
+        # omits `name` so Eagle keeps the existing name (verified empirically).
+        cleaned = clean_items(items)
 
-    batches = [cleaned[i:i + args.batch] for i in range(0, len(cleaned), args.batch)]
-    total_requested = len(cleaned)
-    total_confirmed = 0
-    for bi, batch in enumerate(batches, 1):
-        res = client.call_tool(args.tool, {"items": batch})
-        if res is None:
-            print(f"batch {bi}/{len(batches)}: TIMEOUT (safe to re-run these "
-                  f"{len(batch)} items — item_update writes absolute values, so "
-                  f"applying the same payload twice changes nothing)")
-            continue
-        is_err = res.get("result", {}).get("isError", False)
-        content = res.get("result", {}).get("content", [])
-        text = content[0].get("text", "") if content else ""
-        print(f"batch {bi}/{len(batches)}: isError={is_err} | {text[:200]}")
-        if not is_err:
-            n = count_item_successes(text, len(batch))
-            total_confirmed += n
-            if n != len(batch):
-                print(f"  batch {bi}: only {n}/{len(batch)} items succeeded "
-                      f"(see per-item errors above)")
+        batches = [cleaned[i:i + args.batch] for i in range(0, len(cleaned), args.batch)]
+        total_requested = len(cleaned)
+        total_confirmed = 0
+        for bi, batch in enumerate(batches, 1):
+            res = client.call_tool(args.tool, {"items": batch})
+            if res is None:
+                print(f"batch {bi}/{len(batches)}: TIMEOUT (safe to re-run these "
+                      f"{len(batch)} items — item_update writes absolute values, so "
+                      f"applying the same payload twice changes nothing)")
+                continue
+            is_err = res.get("result", {}).get("isError", False)
+            content = res.get("result", {}).get("content", [])
+            text = content[0].get("text", "") if content else ""
+            print(f"batch {bi}/{len(batches)}: isError={is_err} | {text[:200]}")
+            if not is_err:
+                n = count_item_successes(text, len(batch))
+                total_confirmed += n
+                if n != len(batch):
+                    print(f"  batch {bi}: only {n}/{len(batch)} items succeeded "
+                          f"(see per-item errors above)")
 
-    print(f"requested={total_requested} confirmed_ok={total_confirmed}")
-    if total_confirmed != total_requested:
-        print("WARNING: confirmed count != requested count — re-read the items "
-              "afterwards to find any silently dropped entries.")
-    client.close()
+        print(f"requested={total_requested} confirmed_ok={total_confirmed}")
+        if total_confirmed != total_requested:
+            print("WARNING: confirmed count != requested count — re-read the items "
+                  "afterwards to find any silently dropped entries.")
+            sys.exit(1)
+    finally:
+        client.close()
 
 
 if __name__ == "__main__":

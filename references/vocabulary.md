@@ -1,6 +1,6 @@
 # Design Vocabulary (controlled tag taxonomy)
 
-Use this as the tag taxonomy. Per asset keep only the most search-valuable tags (≈6–10 total across dimensions).
+Use this as the tag taxonomy. Per asset keep only the most search-valuable tags (≈4–9 total across dimensions — see templates.md for the per-dimension split).
 
 ## Language rule (hard rule)
 

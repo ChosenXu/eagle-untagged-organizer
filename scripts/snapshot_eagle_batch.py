@@ -5,7 +5,7 @@ Reads the id list from a dry-run manifest (produced by build_dryrun.py),
 fetches each item's current name / tags / annotation via `item_get` with
 `fullDetails`, and writes a timestamped JSON snapshot. This is purely
 read-only — it never writes to Eagle — and gives you a rollback point before
-apply_eagle_batch.py modifies the batch. See SKILL.md Phase 3, Step 3-pre.
+apply_eagle_batch.py modifies the batch. See SKILL.md Phase 3, Step 3c.
 
 Usage:
     python3 snapshot_eagle_batch.py --manifest dryrun_manifest.json [--out-dir <dir>]
@@ -61,34 +61,34 @@ def main():
     out_path = os.path.join(args.out_dir, f"eagle-rollback-{ts}.json")
 
     client = MCPClient(resolve_proxy(args.proxy))
-    if client.initialize() is None:
+    try:
+        if client.initialize() is None:
+            sys.exit("error: MCP initialize failed (is Eagle running?)")
+
+        # Fetch current state in safe batches (read-only).
+        fetched = {}
+        for i in range(0, len(ids), GET_BATCH):
+            chunk = ids[i:i + GET_BATCH]
+            res = client.call_tool("item_get", {"ids": chunk, "fullDetails": True})
+            if res is None:
+                print(f"WARNING: item_get timed out for chunk {i//GET_BATCH + 1}; "
+                      f"{len(chunk)} ids will be missing from the snapshot")
+                continue
+            content = res.get("result", {}).get("content", [])
+            text = content[0].get("text", "") if content else ""
+            if res.get("result", {}).get("isError"):
+                print(f"WARNING: item_get failed for chunk {i//GET_BATCH + 1}: {text[:200]}")
+                continue
+            try:
+                d = json.loads(text)
+            except Exception:
+                print(f"WARNING: could not parse item_get response for chunk {i//GET_BATCH + 1}")
+                continue
+            for it in d.get("data", []):
+                if it.get("id"):
+                    fetched[it["id"]] = it
+    finally:
         client.close()
-        sys.exit("error: MCP initialize failed (is Eagle running?)")
-
-    # Fetch current state in safe batches (read-only).
-    fetched = {}
-    for i in range(0, len(ids), GET_BATCH):
-        chunk = ids[i:i + GET_BATCH]
-        res = client.call_tool("item_get", {"ids": chunk, "fullDetails": True})
-        if res is None:
-            print(f"WARNING: item_get timed out for chunk {i//GET_BATCH + 1}; "
-                  f"{len(chunk)} ids will be missing from the snapshot")
-            continue
-        content = res.get("result", {}).get("content", [])
-        text = content[0].get("text", "") if content else ""
-        if res.get("result", {}).get("isError"):
-            print(f"WARNING: item_get failed for chunk {i//GET_BATCH + 1}: {text[:200]}")
-            continue
-        try:
-            d = json.loads(text)
-        except Exception:
-            print(f"WARNING: could not parse item_get response for chunk {i//GET_BATCH + 1}")
-            continue
-        for it in d.get("data", []):
-            if it.get("id"):
-                fetched[it["id"]] = it
-
-    client.close()
 
     snap = {
         "generatedAt": datetime.now().isoformat(),

@@ -6,7 +6,7 @@ item's original name / tags / annotation via `item_update`. This OVERWRITES the
 current values, so it is a true rollback to the pre-write state.
 
 For safety it prints a summary and asks for explicit confirmation (type "yes")
-before writing anything. See SKILL.md Phase 3, Step 3-pre.
+before writing anything. See SKILL.md Phase 3, Step 3c.
 
 Usage:
     python3 restore_eagle_snapshot.py --snapshot eagle-rollback-YYYYMMDD-HHMMSS.json [--batch 20] [--yes]
@@ -68,48 +68,51 @@ def main():
             sys.exit("rollback cancelled — no changes made")
 
     client = MCPClient(resolve_proxy(args.proxy))
-    if client.initialize() is None:
+    try:
+        if client.initialize() is None:
+            sys.exit("error: MCP initialize failed (is Eagle running?)")
+
+        # Send a field only when the snapshot entry actually has it — omitting a
+        # field makes Eagle preserve the current value, whereas defaulting to
+        # ""/[] would blank the name or wipe tags on hand-edited snapshots.
+        payload = []
+        for it in items:
+            if not it.get("id"):
+                print(f"warning: skipping snapshot entry without id: {it!r}")
+                continue
+            entry = {"id": it["id"]}
+            for field in ("name", "tags", "annotation"):
+                if field in it:
+                    entry[field] = it[field]
+            payload.append(entry)
+
+        batches = [payload[i:i + args.batch] for i in range(0, len(payload), args.batch)]
+        total_confirmed = 0
+        for bi, batch in enumerate(batches, 1):
+            res = client.call_tool("item_update", {"items": batch})
+            if res is None:
+                print(f"batch {bi}/{len(batches)}: TIMEOUT (safe to re-run restore for "
+                      f"these {len(batch)} items — item_update writes absolute values, "
+                      f"so re-applying the same snapshot changes nothing)")
+                continue
+            is_err = res.get("result", {}).get("isError", False)
+            content = res.get("result", {}).get("content", [])
+            text = content[0].get("text", "") if content else ""
+            print(f"batch {bi}/{len(batches)}: isError={is_err} | {text[:120]}")
+            if not is_err:
+                n = count_item_successes(text, len(batch))
+                total_confirmed += n
+                if n != len(batch):
+                    print(f"  batch {bi}: only {n}/{len(batch)} items restored "
+                          f"(see per-item errors above)")
+
+        print(f"restored={total_confirmed}/{len(payload)}")
+        if total_confirmed != len(payload):
+            print("WARNING: restored count != item count — re-read the items to find any "
+                  "silently dropped entries, then re-run restore if needed.")
+            sys.exit(1)
+    finally:
         client.close()
-        sys.exit("error: MCP initialize failed (is Eagle running?)")
-
-    # Send a field only when the snapshot entry actually has it — omitting a
-    # field makes Eagle preserve the current value, whereas defaulting to
-    # ""/[] would blank the name or wipe tags on hand-edited snapshots.
-    payload = []
-    for it in items:
-        if not it.get("id"):
-            print(f"warning: skipping snapshot entry without id: {it!r}")
-            continue
-        entry = {"id": it["id"]}
-        for field in ("name", "tags", "annotation"):
-            if field in it:
-                entry[field] = it[field]
-        payload.append(entry)
-
-    batches = [payload[i:i + args.batch] for i in range(0, len(payload), args.batch)]
-    total_confirmed = 0
-    for bi, batch in enumerate(batches, 1):
-        res = client.call_tool("item_update", {"items": batch})
-        if res is None:
-            print(f"batch {bi}/{len(batches)}: TIMEOUT (safe to re-run restore for "
-                  f"these {len(batch)} items — item_update writes absolute values, "
-                  f"so re-applying the same snapshot changes nothing)")
-            continue
-        is_err = res.get("result", {}).get("isError", False)
-        text = res.get("result", {}).get("content", [{}])[0].get("text", "")
-        print(f"batch {bi}/{len(batches)}: isError={is_err} | {text[:120]}")
-        if not is_err:
-            n = count_item_successes(text, len(batch))
-            total_confirmed += n
-            if n != len(batch):
-                print(f"  batch {bi}: only {n}/{len(batch)} items restored "
-                      f"(see per-item errors above)")
-
-    print(f"restored={total_confirmed}/{len(payload)}")
-    if total_confirmed != len(payload):
-        print("WARNING: restored count != item count — re-read the items to find any "
-              "silently dropped entries, then re-run restore if needed.")
-    client.close()
 
 
 if __name__ == "__main__":

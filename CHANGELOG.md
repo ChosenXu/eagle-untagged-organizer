@@ -9,6 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.7.3] - 2026-11-08
+
+### Fixed / 修复
+
+- `count_item_successes` now treats an empty `data` array as zero confirmed items instead of falling back to the batch size — a partial or failed batch with batch-level `isError=false` is no longer reported as all-succeeded (this completes the v2.7.1 S-11 accuracy guard for the empty-array shape).
+  `count_item_successes` 现在把空的 `data` 数组按「零条确认」处理，不再回退成批大小——批级 `isError=false` 的部分/失败批次不再被误报为全部成功（补全 v2.7.1 S-11 精度修复在此形状下的缺口）。
+- `restore_eagle_snapshot.py` guards `result.content == []` before indexing, so an empty content array can no longer raise `IndexError` and abort a rollback midway; `apply_eagle_batch.py` and `restore_eagle_snapshot.py` now exit non-zero when the confirmed/restored count is below the requested count, so a partial batch is detectable from the exit status.
+  `restore_eagle_snapshot.py` 在索引前对 `result.content == []` 加保护，空内容数组不再抛 `IndexError` 中断回滚；`apply_eagle_batch.py` 与 `restore_eagle_snapshot.py` 在确认/恢复条数少于请求条数时改为非 0 退出，部分失败的批次可从退出码识别。
+- `MCPClient.close()` now SIGKILLs a child that ignores SIGTERM within the grace window, and all three bundled scripts close the client in a `finally` block, so an exception mid-batch no longer leaks the node process.
+  `MCPClient.close()` 对在宽限期内忽略 SIGTERM 的子进程补发 SIGKILL；三个内置脚本均在 `finally` 中关闭 client，批次中途异常不再泄漏 node 进程。
+
+### Changed / 变更
+
+- `clientInfo.version` now comes from a single `_skill_version()` helper that reads the SKILL.md frontmatter, instead of the hardcoded `"1.0"` literal, so client identity no longer drifts on release.
+  `clientInfo.version` 改由读取 SKILL.md frontmatter 的单一 `_skill_version()` 助手提供，不再是硬编码的 `"1.0"`，客户端标识不再随发版漂移。
+- Documentation drift cleared: `references/gotchas.md` no longer references the WorkBuddy-only `DeferExecuteTool`; `references/templates.md`'s colon rule now distinguishes CJK `：` from non-CJK `: `; `scripts/snapshot_eagle_batch.py` and `scripts/restore_eagle_snapshot.py` docstrings point to the real "Phase 3, Step 3c"; `references/vocabulary.md`'s tag-count range is aligned with `templates.md` (≈4–9).
+  清理文档漂移：`references/gotchas.md` 不再出现 WorkBuddy 专属的 `DeferExecuteTool`；`references/templates.md` 的冒号规则现区分 CJK `：` 与非 CJK `: `；`scripts/snapshot_eagle_batch.py` 与 `scripts/restore_eagle_snapshot.py` 的 docstring 指向真实的「Phase 3, Step 3c」；`references/vocabulary.md` 的标签数量区间与 `templates.md` 对齐（≈4–9）。
+- Removed the leftover `.ruff_cache/` working-tree directory and added `.ruff_cache/` to `.gitignore`.
+  删除工作区残留的 `.ruff_cache/` 目录，并将 `.ruff_cache/` 加入 `.gitignore`。
+
+### Notes / 说明
+
+- Version bumped 2.7.2 → 2.7.3 (PATCH: bundled-script robustness/accuracy fixes plus documentation-drift cleanup; no workflow or payload-format changes). `clientInfo.version` now tracks SKILL.md via `_skill_version()`.
+  版本 2.7.2 → 2.7.3（PATCH：内置脚本健壮性/准确性修复 + 文档漂移清理；工作流与载荷格式无变化）。`clientInfo.version` 现经 `_skill_version()` 跟随 SKILL.md。
+
 ## [2.7.2] - 2026-10-09
 
 ### Added / 新增
