@@ -108,12 +108,21 @@ def main():
             "annotation": it.get("annotation", ""),
         })
 
+    # Atomic write: temp file + os.replace guarantees a crash mid-write cannot
+    # leave a half-written file that LOOKS like a valid rollback point (the
+    # rollback counterpart would otherwise json.load a truncated snapshot).
+    tmp = out_path + ".tmp"
     try:
-        with open(out_path, "w") as f:
+        with open(tmp, "w", encoding="utf-8") as f:
             json.dump(snap, f, ensure_ascii=False, indent=2)
+        os.replace(tmp, out_path)
     except Exception as e:
         # Snapshot is a safety net, not a required step — warn, don't abort.
         print(f"WARNING: could not write snapshot ({e}); batch proceeds without rollback point")
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
         return
 
     print(f"snapshot written: {out_path}")

@@ -33,6 +33,7 @@ Notes:
 
 import argparse
 import json
+import os
 import sys
 
 
@@ -77,8 +78,12 @@ def main():
         }
         manifest["items"].append(entry)
 
-    with open(args.output, "w") as f:
+    # Atomic write: temp file + os.replace so an interrupted run cannot leave
+    # a half-written, editable manifest behind.
+    tmp = args.output + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, args.output)
 
     print(f"wrote {len(manifest['items'])} items to {args.output}")
     print("review this file, delete/alter any entries you want to skip, then run:")

@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.7.4] - 2026-11-09
+
+### Fixed / 修复
+
+- The pre-write rollback snapshot (`snapshot_eagle_batch.py`) and the editable dry-run manifest (`build_dryrun.py`) are now written atomically (temp file + `os.replace`), so an interrupted or failed write can no longer leave a truncated file that looks valid. Without this, a half-written snapshot would only surface as a `json.load` error at rollback time (after damage), and a half-written manifest could be fed straight back to `apply_eagle_batch.py`.
+  预写回滚快照（`snapshot_eagle_batch.py`）与可编辑的 dry-run 清单（`build_dryrun.py`）现在改为原子写（临时文件 + `os.replace`），中断或写入失败不会再留下「看似有效实为截断」的文件。否则，半写的快照只会在回滚时（损害已发生之后）以 `json.load` 报错暴露，半写的清单还可能被直接喂回 `apply_eagle_batch.py`。
+
+### Added / 新增
+
+- Added `tests/test_build_dryrun.py` covering manifest building, malformed-entry skipping, and the absence of a leftover `.tmp` file (atomic write); the suite now runs 16 tests.
+  新增 `tests/test_build_dryrun.py`，覆盖清单构建、畸形条目跳过，以及无 `.tmp` 残留（原子写）；测试套件现为 16 项。
+
+### Notes / 说明
+
+- Version bumped 2.7.3 → 2.7.4 (PATCH: atomic writes for safety artifacts plus tests; no workflow or payload-format changes).
+  版本 2.7.3 → 2.7.4（PATCH：安全工件的原子写 + 测试；工作流与载荷格式无变化）。
+
 ## [2.7.3] - 2026-11-08
 
 ### Fixed / 修复
